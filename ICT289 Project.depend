@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1459592067 source:d:\projects\university\ict289\project\ict289 project\main.c
+	<stdio.h>
+	<stdlib.h>
+	<GL/freeglut.h>
+	<fcntl.h>
+	<unistd.h>
+	<stdbool.h>
+	"objloader.h"
+	"input.h"
+
+1458991421 d:\projects\university\ict289\project\ict289 project\objloader.h
+	<stdio.h>
+	<stdlib.h>
+	<GL/freeglut.h>
+	"math.h"
+
+1458713790 d:\projects\university\ict289\project\ict289 project\math.h
+
+1458991720 source:d:\projects\university\ict289\project\ict289 project\objloader.c
+	"objloader.h"
+
+1459592168 d:\projects\university\ict289\project\ict289 project\input.h
+	<GL/freeglut.h>
+
+1459592241 source:d:\projects\university\ict289\project\ict289 project\input.c
+	"input.h"
+
