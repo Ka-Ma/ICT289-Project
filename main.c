@@ -361,7 +361,7 @@ void renderScene(void)
         glTranslatef(i * 20.0, 0, j * 20.0);
         glScalef(0.05f, 0.05f, 0.05f);
 
-        drawHouse();
+        //drawHouse();          Commented out to remove all house instances from project. Leaves blank "test" ground
 
         glPopMatrix();
     }
