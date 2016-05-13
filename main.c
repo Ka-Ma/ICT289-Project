@@ -6,6 +6,12 @@
 #include <stdbool.h>
 
 #include "objloader.h"
+#include "globalState.h" // global variables for fireworks settings and UI display states KM
+#include "uiKeysHandler.h"
+#include "uiMouseHandler.h"
+#include "uiSettings.h"
+#include "uiOptions.h"
+#include "uiQuit.h"
 
 #define ESCAPE          27
 #define MAX_FILE_NAME   20
@@ -112,18 +118,21 @@ void mouseMove(int x, int y)
 
 void mouseButton(int button, int state, int x, int y)
 {
-    // Only start motion if the left button is pressed
-    if (button == GLUT_LEFT_BUTTON)
+    if(!uiMouseHandler(button, state, x, y)) //filter for UI -KM
     {
-        // When the button is released
-        if (state == GLUT_UP)
+        // Only start motion if the left button is pressed
+        if (button == GLUT_LEFT_BUTTON)
         {
-            angle += deltaAngle;
-            deltaAngle = 0;
-            xOrigin = -1;
-        }else
-        {
-            xOrigin = x;
+            // When the button is released
+            if (state == GLUT_UP)
+            {
+                angle += deltaAngle;
+                deltaAngle = 0;
+                xOrigin = -1;
+            }else
+            {
+                xOrigin = x;
+            }
         }
     }
 }
@@ -180,17 +189,21 @@ void specialKeyPress(int key, int x, int y)
 
 void keyPress(unsigned char key, int x, int y)
 {
-
-    switch (key)
+    if(!uiKeysHandler(key, x, y)) //filter for UI -KM
     {
-    case ESCAPE:
-        printf("Exited...");
-        exit(1);
-        break;
-    case 'w': deltaMove = 0.5f; break;
-    case 's': deltaMove = -0.5f; break;
-    case 'a': deltaAngle = -0.01f; break;
-    case 'd': deltaAngle = 0.01f; break;
+        switch (key)
+        {
+        case ESCAPE:
+            gState.uiOptions = true;
+            break;
+        case 'w': deltaMove = 0.5f; break;
+        case 's': deltaMove = -0.5f; break;
+        case 'a': deltaAngle = -0.01f; break;
+        case 'd': deltaAngle = 0.01f; break;
+        case 'f':
+            gState.uiSettings = true;
+            break;
+        }
     }
 
     glutPostRedisplay();
@@ -366,9 +379,9 @@ void renderScene(void)
         glPopMatrix();
     }
 
-    readModels();
+    // readModels();      Commented out as we don't want bones either KM
 
-    drawModels();
+    // drawModels();      Commented out as we don't want bones either KM
 
     frame++;
     time = glutGet(GLUT_ELAPSED_TIME);
@@ -396,6 +409,13 @@ void renderScene(void)
 
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+
+    if(gState.uiSettings)
+        displayUISettings();
+    if(gState.uiOptions)
+        displayUIOptions();
+    if(gState.uiQuit)
+        displayUIQuit();
 
     glutSwapBuffers();
 }
