@@ -189,34 +189,23 @@ void specialKeyPress(int key, int x, int y)
 
 void keyPress(unsigned char key, int x, int y)
 {
-    char used;
-    printf("pressed %c uiKeysHander is %d used %c", key, uiKeysHandler(key, x, y), used);
-
     if(!uiKeysHandler(key, x, y)) //filter for UI -KM
     {
         switch (key)
         {
         case ESCAPE:
-            printf("Exited...");
-            exit(1);
+            gState.uiOptions = true;
             break;
         case 'w': deltaMove = 0.5f; break;
         case 's': deltaMove = -0.5f; break;
         case 'a': deltaAngle = -0.01f; break;
         case 'd': deltaAngle = 0.01f; break;
         case 'f':
-            if(gState.uiSettings)
-                gState.uiSettings = false;
-            else
-                gState.uiSettings = true;
+            gState.uiSettings = true;
             break;
         }
     }
-    else
-    {
-        printf("uiKeysHandler is true\n");
-        scanf(" %c", &used); //need to remove char that is used from buffer but it's not getting to the else
-    }
+
     glutPostRedisplay();
 
 }

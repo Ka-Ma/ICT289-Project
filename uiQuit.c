@@ -38,7 +38,12 @@ void displayUIQuit()
 
 void keysUIQuit(unsigned char key, int x, int y)
 {
-
+    switch (key)
+    {
+    case 27: //resume
+        exit(0);
+        break;
+    }
 }
 
 void mouseUIQuit(int button, int state, int x, int y)

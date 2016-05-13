@@ -40,7 +40,11 @@ void keysUISettings(unsigned char key, int x, int y)
 {
     switch (key)
     {
-    case 27: //escape
+    case 's': //save
+        //copy temp settings to gState
+        gState.uiSettings = false;
+        break;
+    case 'c': //cancel
         gState.uiSettings = false;
         break;
     }

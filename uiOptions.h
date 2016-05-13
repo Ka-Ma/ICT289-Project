@@ -9,6 +9,7 @@
 #define UIOPTIONS_H
 
 #include "dispText.h"
+#include "globalState.h"
 
 void displayUIOptions();
 void keysUIOptions(unsigned char key, int x, int y);

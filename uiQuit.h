@@ -9,6 +9,7 @@
 #define UIQUIT_H
 
 #include "dispText.h"
+#include "globalState.h"
 
 void displayUIQuit();
 void keysUIQuit(unsigned char key, int x, int y);

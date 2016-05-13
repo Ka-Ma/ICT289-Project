@@ -38,7 +38,15 @@ void displayUIOptions()
 
 void keysUIOptions(unsigned char key, int x, int y)
 {
-
+    switch (key)
+    {
+    case 'q': //quit
+        gState.uiQuit = true;
+        break;
+    case 27: //resume ... pressing esc a second time to enact this control doesn't work.
+        gState.uiSettings = false;
+        break;
+    }
 }
 
 void mouseUIOptions(int button, int state, int x, int y)
