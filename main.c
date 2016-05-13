@@ -6,6 +6,12 @@
 #include <stdbool.h>
 
 #include "objloader.h"
+#include "state.h" // global variables for fireworks settings and UI display states KM
+#include "uiKeysHandler.h"
+#include "uiMouseHandler.h"
+#include "uiSettings.h"
+#include "uiOptions.h"
+#include "uiQuit.h"
 
 #define ESCAPE          27
 #define MAX_FILE_NAME   20
@@ -366,9 +372,9 @@ void renderScene(void)
         glPopMatrix();
     }
 
-    readModels();
+    // readModels();      Commented out as we don't want bones either KM
 
-    drawModels();
+    // drawModels();      Commented out as we don't want bones either KM
 
     frame++;
     time = glutGet(GLUT_ELAPSED_TIME);

@@ -30,6 +30,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c99" />
 		</Compiler>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
@@ -39,6 +40,15 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="objloader.h" />
+		<Unit filename="state.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="state.h" />
+		<Unit filename="uiKeysHandler.h" />
+		<Unit filename="uiMouseHandler.h" />
+		<Unit filename="uiOptions.h" />
+		<Unit filename="uiQuit.h" />
+		<Unit filename="uiSettings.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

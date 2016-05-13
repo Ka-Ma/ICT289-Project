@@ -37,3 +37,14 @@
 
 1458713790 d:\projects\university\ict289\project\ict289-project\math.h
 
+1461809218 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\objloader.c
+	"objloader.h"
+
+1461809218 c:\users\kat\documents\projects\ict289grpproj\ict289-project\objloader.h
+	<stdio.h>
+	<stdlib.h>
+	<GL/freeglut.h>
+	"math.h"
+
+1461809218 c:\users\kat\documents\projects\ict289grpproj\ict289-project\math.h
+
