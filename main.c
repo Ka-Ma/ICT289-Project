@@ -118,18 +118,21 @@ void mouseMove(int x, int y)
 
 void mouseButton(int button, int state, int x, int y)
 {
-    // Only start motion if the left button is pressed
-    if (button == GLUT_LEFT_BUTTON)
+    if(!uiMouseHandler(button, state, x, y)) //filter for UI -KM
     {
-        // When the button is released
-        if (state == GLUT_UP)
+        // Only start motion if the left button is pressed
+        if (button == GLUT_LEFT_BUTTON)
         {
-            angle += deltaAngle;
-            deltaAngle = 0;
-            xOrigin = -1;
-        }else
-        {
-            xOrigin = x;
+            // When the button is released
+            if (state == GLUT_UP)
+            {
+                angle += deltaAngle;
+                deltaAngle = 0;
+                xOrigin = -1;
+            }else
+            {
+                xOrigin = x;
+            }
         }
     }
 }
@@ -186,19 +189,34 @@ void specialKeyPress(int key, int x, int y)
 
 void keyPress(unsigned char key, int x, int y)
 {
+    char used;
+    printf("pressed %c uiKeysHander is %d used %c", key, uiKeysHandler(key, x, y), used);
 
-    switch (key)
+    if(!uiKeysHandler(key, x, y)) //filter for UI -KM
     {
-    case ESCAPE:
-        printf("Exited...");
-        exit(1);
-        break;
-    case 'w': deltaMove = 0.5f; break;
-    case 's': deltaMove = -0.5f; break;
-    case 'a': deltaAngle = -0.01f; break;
-    case 'd': deltaAngle = 0.01f; break;
+        switch (key)
+        {
+        case ESCAPE:
+            printf("Exited...");
+            exit(1);
+            break;
+        case 'w': deltaMove = 0.5f; break;
+        case 's': deltaMove = -0.5f; break;
+        case 'a': deltaAngle = -0.01f; break;
+        case 'd': deltaAngle = 0.01f; break;
+        case 'f':
+            if(state.uiSettings)
+                state.uiSettings = false;
+            else
+                state.uiSettings = true;
+            break;
+        }
     }
-
+    else
+    {
+        printf("uiKeysHandler is true\n");
+        scanf(" %c", &used); //need to remove char that is used from buffer but it's not getting to the else
+    }
     glutPostRedisplay();
 
 }
@@ -402,6 +420,13 @@ void renderScene(void)
 
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+
+    if(state.uiSettings)
+        displayUISettings();
+    if(state.uiOptions)
+        displayUIOptions();
+    if(state.uiQuit)
+        displayUIQuit();
 
     glutSwapBuffers();
 }

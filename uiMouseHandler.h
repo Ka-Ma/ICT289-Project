@@ -8,6 +8,8 @@
 #ifndef UIMOUSEHANDLER_H
 #define UIMOUSEHANDLER_H
 
+#include <stdbool.h>
+
 bool uiMouseHandler(int button, int state, int x, int y);
 
 #endif //UIMOUSEHANDLER_H
