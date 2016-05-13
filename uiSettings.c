@@ -27,7 +27,7 @@ void displayUISettings()
     glEnd();
 
     glColor3f(0,0,1);
-    displayText("SETTINGS", w/2, h/2);
+    displayText("SETTINGS: s to save, c to cancel", w/2, h/2);
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // returning to 3D

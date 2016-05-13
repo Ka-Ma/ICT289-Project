@@ -27,7 +27,7 @@ void displayUIOptions()
     glEnd();
 
     glColor3f(0,0,1);
-    displayText("OPTIONS", w/2, h/2);
+    displayText("OPTIONS: q to quit, esc to resume", w/2, h/2);
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // returning to 3D
@@ -44,7 +44,7 @@ void keysUIOptions(unsigned char key, int x, int y)
         gState.uiQuit = true;
         break;
     case 27: //resume ... pressing esc a second time to enact this control doesn't work.
-        gState.uiSettings = false;
+        gState.uiOptions = false;
         break;
     }
 }

@@ -60,7 +60,7 @@
 1463101661 c:\users\kat\documents\projects\ict289grpproj\ict289-project\disptext.h
 	<GL/freeglut.h>
 
-1463132475 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\main.c
+1463139693 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\main.c
 	<stdio.h>
 	<stdlib.h>
 	<GL/freeglut.h>
@@ -101,7 +101,7 @@
 	"dispText.h"
 	"globalState.h"
 
-1463132188 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.c
+1463139083 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.c
 	"uiSettings.h"
 
 1463106288 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uikeyshandler.c
@@ -110,10 +110,10 @@
 1463106307 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uimousehandler.c
 	"uiMouseHandler.h"
 
-1463132188 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.c
+1463139083 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.c
 	"uiOptions.h"
 
-1463132188 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.c
+1463139083 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.c
 	"uiQuit.h"
 
 1463106112 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\globalstate.c

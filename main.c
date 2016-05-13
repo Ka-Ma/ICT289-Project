@@ -196,120 +196,18 @@ void keyPress(unsigned char key, int x, int y)
         case ESCAPE:
             gState.uiOptions = true;
             break;
+        case 'f':
+            gState.uiSettings = true;
+            break;
         case 'w': deltaMove = 0.5f; break;
         case 's': deltaMove = -0.5f; break;
         case 'a': deltaAngle = -0.01f; break;
         case 'd': deltaAngle = 0.01f; break;
-        case 'f':
-            gState.uiSettings = true;
-            break;
+
         }
     }
 
     glutPostRedisplay();
-
-}
-
-void drawHouse()
-{
-
-    typedef GLfloat point3[3];
-
-    /* define coordinates for a  rectangle - the main "building block"*/
-    point3 vertices[10]= {{0.0, 0.0, -1.0},{0.0, 150.0, -1.0},
-        {60.0, 150.0, -1.0},{60.0, 0.0, -1.0}, {60.0, 100.0, -1.0},
-        {160.0, 150.0, -1.0}, {160.0, 100.0, -1.0}, {160.0, 0.0, -1.0},
-        {220.0, 150.0, -1.0}, {220.0, 0.0, -1.0}
-    };
-
-    glColor3f(0.5f, 0.0f, 0.0f);
-
-    glBegin(GL_QUADS);
-    glVertex3fv(vertices[3]);
-    glVertex3fv(vertices[0]);
-    glVertex3fv(vertices[1]);
-    glVertex3fv(vertices[2]);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3fv(vertices[6]);
-    glVertex3fv(vertices[4]);
-    glVertex3fv(vertices[2]);
-    glVertex3fv(vertices[5]);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3fv(vertices[9]);
-    glVertex3fv(vertices[7]);
-    glVertex3fv(vertices[5]);
-    glVertex3fv(vertices[8]);
-    glEnd();
-
-    // Right Wall
-    glBegin(GL_QUADS);
-    glVertex3f(220.0, 150.0, -1.0);
-    glVertex3f(220.0, 150.0, -200.0);
-    glVertex3f(220.0, 0.0, -200.0);
-    glVertex3f(220.0, 0.0, -1.0);
-    glEnd();
-
-    // Back Wall
-    glBegin(GL_QUADS);
-    glVertex3f(0.0, 0.0, -200.0);
-    glVertex3f(0.0, 150.0, -200.0);
-    glVertex3f(220.0, 150.0, -200.0);
-    glVertex3f(220.0, 0.0, -200.0);
-    glEnd();
-
-    // Left Wall
-    glBegin(GL_QUADS);
-    glVertex3f(0.0, 0.0, -1.0);
-    glVertex3f(0.0, 150.0, -1.0);
-    glVertex3f(0.0, 150.0, -200.0);
-    glVertex3f(0.0, 0.0, -200.0);
-    glEnd();
-
-    glColor3f(0.5f, 0.0f, 0.5f);
-
-    // Door
-    glBegin(GL_QUADS);
-    glVertex3f(60.0, 0.0, -1.0);
-    glVertex3f(60.0, 100.0, -1.0);
-    glVertex3f(160.0, 100.0, -1.0);
-    glVertex3f(160.0, 0.0, -1.0);
-    glEnd();
-
-    glColor3f(0.0f, 0.0f, 0.5f);
-
-    // Roof Front
-    glBegin(GL_TRIANGLES);
-    glVertex3fv(vertices[1]);
-    glVertex3f(220.0, 150.0, -1.0);
-    glVertex3f(110.0, 200.0, -1.0);
-    glEnd();
-
-    // Roof Back
-    glBegin(GL_TRIANGLES);
-    glVertex3f(0.0, 150.0, -200.0);
-    glVertex3f(220.0, 150.0, -200.0);
-    glVertex3f(110.0, 200.0, -200.0);
-    glEnd();
-
-    // Roof Top Left
-    glBegin(GL_QUADS);
-    glVertex3f(0.0, 150.0, -1.0);
-    glVertex3f(0.0, 150.0, -200.0);
-    glVertex3f(110.0, 200.0, -200.0);
-    glVertex3f(110.0, 200.0, -1.0);
-    glEnd();
-
-    // Roof Top Right
-    glBegin(GL_QUADS);
-    glVertex3f(220.0, 150.0, -1.0);
-    glVertex3f(220.0, 150.0, -200.0);
-    glVertex3f(110.0, 200.0, -200.0);
-    glVertex3f(110.0, 200.0, -1.0);
-    glEnd();
 
 }
 
