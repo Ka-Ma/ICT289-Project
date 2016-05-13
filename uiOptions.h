@@ -8,6 +8,8 @@
 #ifndef UIOPTIONS_H
 #define UIOPTIONS_H
 
+#include "dispText.h"
+
 void displayUIOptions();
 void keysUIOptions(unsigned char key, int x, int y);
 void mouseUIOptions(int button, int state, int x, int y);

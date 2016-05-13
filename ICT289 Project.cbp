@@ -36,6 +36,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="dispText.h" />
+		<Unit filename="globalState.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="globalState.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -44,10 +48,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="objloader.h" />
-		<Unit filename="state.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="state.h" />
 		<Unit filename="uiKeysHandler.c">
 			<Option compilerVar="CC" />
 		</Unit>

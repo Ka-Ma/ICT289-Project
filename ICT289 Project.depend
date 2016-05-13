@@ -60,7 +60,7 @@
 1463101661 c:\users\kat\documents\projects\ict289grpproj\ict289-project\disptext.h
 	<GL/freeglut.h>
 
-1463105115 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\main.c
+1463106270 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\main.c
 	<stdio.h>
 	<stdlib.h>
 	<GL/freeglut.h>
@@ -68,49 +68,57 @@
 	<unistd.h>
 	<stdbool.h>
 	"objloader.h"
-	"state.h"
+	"globalState.h"
 	"uiKeysHandler.h"
 	"uiMouseHandler.h"
 	"uiSettings.h"
 	"uiOptions.h"
 	"uiQuit.h"
 
-1463103195 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uikeyshandler.h
+1463106081 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uikeyshandler.h
 	<stdbool.h>
+	"globalState.h"
+	"uiSettings.h"
+	"uiOptions.h"
+	"uiQuit.h"
 
-1463103485 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uimousehandler.h
+1463106242 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uimousehandler.h
 	<stdbool.h>
+	"globalState.h"
+	"uiSettings.h"
+	"uiOptions.h"
+	"uiQuit.h"
 
-1463098195 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.h
+1463106242 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.h
+	"globalState.h"
+	"dispText.h"
 
-1463098195 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.h
+1463106242 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.h
+	"dispText.h"
 
-1463098272 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.h
+1463106242 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.h
+	"dispText.h"
 
 1463104239 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.c
 	"uiSettings.h"
 	"state.h"
 	"dispText.h"
 
-1463103216 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uikeyshandler.c
+1463106288 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uikeyshandler.c
 	"uiKeysHandler.h"
-	"state.h"
-	"uiSettings.h"
-	"uiOptions.h"
-	"uiQuit.h"
 
-1463103535 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uimousehandler.c
+1463106307 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uimousehandler.c
 	"uiMouseHandler.h"
-	"state.h"
-	"uiSettings.h"
+
+1463106242 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.c
 	"uiOptions.h"
+
+1463106242 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.c
 	"uiQuit.h"
 
-1463103647 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.c
-	"uiOptions.h"
-	"dispText.h"
+1463106112 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\globalstate.c
+	"globalState.h"
 
-1463103699 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.c
-	"uiQuit.h"
-	"dispText.h"
+1463106242 c:\users\kat\documents\projects\ict289grpproj\ict289-project\globalstate.h
+	<stdbool.h>
 

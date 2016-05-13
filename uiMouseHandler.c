@@ -1,19 +1,15 @@
 #include "uiMouseHandler.h"
-#include "state.h"
-#include "uiSettings.h"
-#include "uiOptions.h"
-#include "uiQuit.h"
 
 bool uiMouseHandler(int button, int st, int x, int y)
 {
-    if(state.uiSettings)
+    if(gState.uiSettings)
     {
         mouseUISettings(button, st, x, y);
         return true;
     }
-    else if(state.uiOptions)
+    else if(gState.uiOptions)
     {
-        if(state.uiQuit)
+        if(gState.uiQuit)
         {
             mouseUIQuit(button, st, x, y);
             return true;

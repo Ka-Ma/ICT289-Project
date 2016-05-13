@@ -1,6 +1,5 @@
 #include "uiSettings.h"
-#include "state.h"
-#include "dispText.h"
+
 
 
 void displayUISettings()
@@ -42,7 +41,7 @@ void keysUISettings(unsigned char key, int x, int y)
     switch (key)
     {
     case 27: //escape
-        state.uiSettings = false;
+        gState.uiSettings = false;
         break;
     }
 }

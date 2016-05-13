@@ -1,5 +1,5 @@
 #include "uiQuit.h"
-#include "dispText.h"
+
 
 
 void displayUIQuit()

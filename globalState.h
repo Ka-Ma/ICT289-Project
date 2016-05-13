@@ -10,7 +10,7 @@
 
 #include <stdbool.h>
 
-typedef struct state{
+typedef struct globalState{
         /// display states
     bool uiSettings;
     bool uiOptions;
@@ -31,6 +31,6 @@ typedef struct state{
     float velocityCh;
 };
 
-extern struct state state;
+extern struct globalState gState;
 
 #endif // STATE_H

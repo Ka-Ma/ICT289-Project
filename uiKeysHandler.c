@@ -1,19 +1,15 @@
 #include "uiKeysHandler.h"
-#include "state.h"
-#include "uiSettings.h"
-#include "uiOptions.h"
-#include "uiQuit.h"
 
 bool uiKeysHandler(unsigned char key, int x, int y)
 {
-    if(state.uiSettings)
+    if(gState.uiSettings)
     {
         keysUISettings(key, x, y);
         return true;
     }
-    else if(state.uiOptions)
+    else if(gState.uiOptions)
     {
-        if(state.uiQuit)
+        if(gState.uiQuit)
         {
             keysUIQuit(key,x,y);
             return true;

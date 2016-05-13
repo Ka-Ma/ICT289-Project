@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 #include "objloader.h"
-#include "state.h" // global variables for fireworks settings and UI display states KM
+#include "globalState.h" // global variables for fireworks settings and UI display states KM
 #include "uiKeysHandler.h"
 #include "uiMouseHandler.h"
 #include "uiSettings.h"
@@ -205,10 +205,10 @@ void keyPress(unsigned char key, int x, int y)
         case 'a': deltaAngle = -0.01f; break;
         case 'd': deltaAngle = 0.01f; break;
         case 'f':
-            if(state.uiSettings)
-                state.uiSettings = false;
+            if(gState.uiSettings)
+                gState.uiSettings = false;
             else
-                state.uiSettings = true;
+                gState.uiSettings = true;
             break;
         }
     }
@@ -421,11 +421,11 @@ void renderScene(void)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
-    if(state.uiSettings)
+    if(gState.uiSettings)
         displayUISettings();
-    if(state.uiOptions)
+    if(gState.uiOptions)
         displayUIOptions();
-    if(state.uiQuit)
+    if(gState.uiQuit)
         displayUIQuit();
 
     glutSwapBuffers();

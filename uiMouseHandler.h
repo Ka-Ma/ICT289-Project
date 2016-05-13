@@ -9,6 +9,11 @@
 #define UIMOUSEHANDLER_H
 
 #include <stdbool.h>
+#include "globalState.h"
+#include "uiSettings.h"
+#include "uiOptions.h"
+#include "uiQuit.h"
+
 
 bool uiMouseHandler(int button, int state, int x, int y);
 

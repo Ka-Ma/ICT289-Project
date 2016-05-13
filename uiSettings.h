@@ -8,6 +8,9 @@
 #ifndef UISETTINGS_H
 #define UISETTINGS_H
 
+#include "globalState.h"
+#include "dispText.h"
+
 void displayUISettings();
 void keysUISettings(unsigned char key, int x, int y);
 void mouseUISettings(int button, int state, int x, int y);

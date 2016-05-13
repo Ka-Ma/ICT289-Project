@@ -8,6 +8,8 @@
 #ifndef UIQUIT_H
 #define UIQUIT_H
 
+#include "dispText.h"
+
 void displayUIQuit();
 void keysUIQuit(unsigned char key, int x, int y);
 void mouseUIQuit(int button, int state, int x, int y);

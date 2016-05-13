@@ -1,6 +1,6 @@
-#include "state.h"
+#include "globalState.h"
 
-struct state state = {
+struct globalState gState = {
 
     // setting defaults
     .uiSettings = false,
