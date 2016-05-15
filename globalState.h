@@ -17,9 +17,7 @@ typedef struct globalState{
     bool uiQuit;
 
         /// firework settings
-    float colourR;
-    float colourG;
-    float colourB;
+    float colour[3];
     bool colourRand;
     int angle; // 1-9 to represent presets
     bool angleRand;
