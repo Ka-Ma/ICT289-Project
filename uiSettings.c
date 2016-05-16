@@ -2,6 +2,11 @@
 
 
 struct globalState tmpState;
+struct uiBits {
+    GLshort saveBL[2]; //x,y coords of bottom left of save button
+    GLshort saveTR[2]; //x,y coords of top right of save button
+    GLshort cancel[2];
+    }uiBits;
 
 void displayUISettings()
 {
@@ -179,6 +184,10 @@ void displayUISettings()
     displayText("Random Angle", percUnitW*60+25, percUnitH*55+5);
 
     //save button
+    uiBits.saveBL[0] = percUnitW*70;
+    uiBits.saveBL[1] = percUnitH*36;
+    uiBits.saveTR[0] = percUnitW*78;
+    uiBits.saveTR[1] = percUnitH*49;
     glColor3f(0, 0.5, 0);
     glBegin(GL_QUADS);
         glVertex2s(percUnitW*70, percUnitH*36);
@@ -223,8 +232,15 @@ void mouseUISettings(int button, int state, int x, int y)
 {
     if(button == GLUT_LEFT_BUTTON)
     {
-//        if(x, y in area of cancel){
-//            glReadPixels(x,y,1,1,GL_RGB,GLfloat, tmpState.colour);
-//        }
+        if(x > uiBits.saveBL[0] && x < uiBits.saveTR[0] && y > uiBits.saveBL[1] && y < uiBits.saveTR[1]){
+            gState = tmpState; //copy temp settings to gState
+            gState.uiSettings = false;
+            printf("mouse x = %d y = %d\n", x, y);
+            printf("button BL x = %d y = %d\n", uiBits.saveBL[0],uiBits.saveBL[1]);
+            printf("button TR x = %d y = %d\n", uiBits.saveTR[0],uiBits.saveTR[1]);
+            // mouse coords read from top left to bottom right need to sort that...
+        }
+    //glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, tmpState.colour);
     }
+
 }
