@@ -140,11 +140,11 @@ void displayUISettings()
     glEnd();
     for (i=0; i<3;i++){
         for (j=0;j<3;j++){
-            drawHollowCircle(percUnitW*60+i*30, percUnitH*62+j*30, 10);
+            drawHollowCircle(percUnitW*60+i*40, percUnitH*63+j*40, 10);
             if(!tmpState.angleRand){
 
                 if(tmpState.angle == (i*3)+j+1){
-                        drawFilledCircle(percUnitW*60+i*30, percUnitH*62+j*30, 8);
+                        drawFilledCircle(percUnitW*60+i*40, percUnitH*63+j*40, 8);
                 }
             }
             else{
@@ -181,20 +181,20 @@ void displayUISettings()
     //save button
     glColor3f(0, 0.5, 0);
     glBegin(GL_QUADS);
-        glVertex2s(percUnitW*70, percUnitH*40);
-        glVertex2s(percUnitW*78, percUnitH*40);
-        glVertex2s(percUnitW*78, percUnitH*48);
-        glVertex2s(percUnitW*70, percUnitH*48);
+        glVertex2s(percUnitW*70, percUnitH*36);
+        glVertex2s(percUnitW*78, percUnitH*36);
+        glVertex2s(percUnitW*78, percUnitH*49);
+        glVertex2s(percUnitW*70, percUnitH*49);
     glEnd();
     displayText("SAVE ('s')", percUnitW*72, percUnitH*42);
 
     //cancel button
     glColor3f(0.5, 0, 0);
     glBegin(GL_QUADS);
-        glVertex2s(percUnitW*70, percUnitH*30);
-        glVertex2s(percUnitW*78, percUnitH*30);
-        glVertex2s(percUnitW*78, percUnitH*38);
-        glVertex2s(percUnitW*70, percUnitH*38);
+        glVertex2s(percUnitW*70, percUnitH*21);
+        glVertex2s(percUnitW*78, percUnitH*21);
+        glVertex2s(percUnitW*78, percUnitH*34);
+        glVertex2s(percUnitW*70, percUnitH*34);
     glEnd();
     displayText("CANCEL ('c')", percUnitW*72, percUnitH*32);
 
@@ -221,5 +221,10 @@ void keysUISettings(unsigned char key, int x, int y)
 
 void mouseUISettings(int button, int state, int x, int y)
 {
-
+    if(button == GLUT_LEFT_BUTTON)
+    {
+//        if(x, y in area of cancel){
+//            glReadPixels(x,y,1,1,GL_RGB,GLfloat, tmpState.colour);
+//        }
+    }
 }

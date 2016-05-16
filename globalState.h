@@ -21,9 +21,6 @@ typedef struct globalState{
     bool colourRand;
     int angle; // 1-9 to represent presets
     bool angleRand;
-    float fuseMin;
-    float fuseMax;
-    float fuseCh;
     float velocityMin;
     float velocityMax;
     float velocityCh;
