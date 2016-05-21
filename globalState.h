@@ -27,5 +27,6 @@ typedef struct globalState{
 };
 
 extern struct globalState gState;
+extern struct globalState tmpState;
 
 #endif // STATE_H

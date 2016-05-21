@@ -198,6 +198,7 @@ void keyPress(unsigned char key, int x, int y)
             break;
         case 'f':
             gState.uiSettings = true;
+            tmpState = gState; // temporary holder of settings to be confirmed on exit
             break;
         case 'w': deltaMove = 0.5f; break;
         case 's': deltaMove = -0.5f; break;

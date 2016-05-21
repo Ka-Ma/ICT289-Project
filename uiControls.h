@@ -37,13 +37,13 @@ void drawHollowCircle(GLfloat x, GLfloat y, GLfloat radius);
 @param y - y position of start point (bottom left)
 @param text - the text to be positioned left of the checkbox
 */
-void drawCheckBox(GLfloat x, GLfloat y, const char* text);
+void drawCheckBox(GLshort x, GLshort y, const char* text);
 
 /**
 @brief Function to draw a check in the box
 @param x - x position of start point (bottom left)
 @param y - y position of start point (bottom left)
 */
-void drawCheck(GLfloat x, GLfloat y);
+void drawCheck(GLshort x, GLshort y);
 
 #endif // UICONTROLS_H

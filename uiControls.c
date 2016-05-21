@@ -37,7 +37,7 @@ void drawHollowCircle(GLfloat x, GLfloat y, GLfloat radius){
 	glEnd();
 }
 
-void drawCheckBox(GLfloat x, GLfloat y, const char* text)
+void drawCheckBox(GLshort x, GLshort y, const char* text)
 {
     glColor3f(0,0,0);
     glBegin(GL_LINE_LOOP);
@@ -49,15 +49,16 @@ void drawCheckBox(GLfloat x, GLfloat y, const char* text)
     displayText(text, x+25, y+5);
 }
 
-void drawCheck(GLfloat x, GLfloat y)
+void drawCheck(GLshort x, GLshort y)
 {
+    printf("in drawCheck check is x %d, y %d\n", x, y);
     glColor3f(0,0,0);
-    glBegin(GL_LINE);
-            glVertex2s(x, y);
-            glVertex2s(x+20, y+20);
-        glEnd();
-        glBegin(GL_LINE);
-            glVertex2s(x+20, y);
-            glVertex2s(x, y+20);
-        glEnd();
+    glBegin(GL_LINES);
+        glVertex2s(x, y);
+        glVertex2s(x+20, y+20);
+    glEnd();
+    glBegin(GL_LINES);
+        glVertex2s(x+20, y);
+        glVertex2s(x, y+20);
+    glEnd();
 }
