@@ -30,7 +30,16 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c99" />
 		</Compiler>
+		<Unit filename="dispText.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="dispText.h" />
+		<Unit filename="globalState.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="globalState.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -39,6 +48,30 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="objloader.h" />
+		<Unit filename="uiControls.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="uiControls.h" />
+		<Unit filename="uiKeysHandler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="uiKeysHandler.h" />
+		<Unit filename="uiMouseHandler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="uiMouseHandler.h" />
+		<Unit filename="uiOptions.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="uiOptions.h" />
+		<Unit filename="uiQuit.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="uiQuit.h" />
+		<Unit filename="uiSettings.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="uiSettings.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

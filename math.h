@@ -1,6 +1,8 @@
 #ifndef MATH_H
 #define MATH_H
 
+#define PI 3.14159265358979323846
+
 struct Vector3{double x, y, z;};
 
 struct FaceVec{
