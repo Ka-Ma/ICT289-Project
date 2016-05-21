@@ -13,4 +13,4 @@ struct globalState gState = {
     .angleRand = false
 };
 
-struct globalState tmpState;
+struct globalState tmpState; // for the settings UI before accepting changes
