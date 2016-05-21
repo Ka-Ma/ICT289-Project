@@ -51,7 +51,6 @@ void drawCheckBox(GLshort x, GLshort y, const char* text)
 
 void drawCheck(GLshort x, GLshort y)
 {
-    printf("in drawCheck check is x %d, y %d\n", x, y);
     glColor3f(0,0,0);
     glBegin(GL_LINES);
         glVertex2s(x, y);

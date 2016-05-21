@@ -28,7 +28,7 @@ void displayUISettings()
     glEnd();
 
     glColor3f(0,0,1);
-    displayText("SETTINGS: s to save, c to cancel", percUnitW*22, percUnitH*78);
+    displayText("SETTINGS:", percUnitW*22, percUnitH*78);
 
     //draw chosen colour if not random
     if(!tmpState.colourRand){
@@ -49,16 +49,11 @@ void displayUISettings()
     //check box for selection of random colour
     uiBits.randClr[0]=percUnitW*35;
     uiBits.randClr[1]=percUnitH*55;
-    printf("check box is x %d, y %d\n", uiBits.randClr[0], uiBits.randClr[1]);
     drawCheckBox(uiBits.randClr[0],uiBits.randClr[1],"Random Colour");
     //if random colour selected draw cross
     if(tmpState.colourRand){
-        printf("drawing check in rand colour\n");
-        printf("from dUIS check box is x %d, y %d\n", uiBits.randClr[0], uiBits.randClr[1]);
         drawCheck(uiBits.randClr[0],uiBits.randClr[1]);
     }
-
-    printf("random colour = %d\n", tmpState.colourRand);
 
     //for selection of angle: draw a box then distribute evenly within 9 circles of radius 10, in 3 rows of 3, filled in for chosen angle
     drawAnglePresets(percUnitW, percUnitH);
@@ -137,18 +132,11 @@ void mouseUISettings(int button, int state, int x, int y)
 
         // toggle random colour checkbox
         else if(x > uiBits.randClr[0] && x < uiBits.randClr[0] + 20 && y > uiBits.randClr[1] && y < uiBits.randClr[1] + 20){
-            printf("mouse click x = %d y = %d\n", x, y);
-            printf("height - y = %d\n", uiBits.height-y);
-            printf("check box x = %d y = %d\n", uiBits.randClr[0], uiBits.randClr[1]);
             if(!tmpState.colourRand){
-                printf("it's false = %d\n", tmpState.colourRand);
                 tmpState.colourRand = true;
-                printf("now true = %d\n", tmpState.colourRand);
             }
             else{
-                printf("it's true = %d\n", tmpState.colourRand);
                 tmpState.colourRand = false;
-                printf("now false = %d\n", tmpState.colourRand);
             }
         }
         //area of radio buttons for angles
@@ -156,9 +144,17 @@ void mouseUISettings(int button, int state, int x, int y)
             printf("clicked in angles area");
             //which clicked?
         }
-
-        //if area of colour picker (triangle)
-            //glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, tmpState.colour);
+        //area of colour picker (triangle) formula of a line point1x-x = m(y-point1y) where m = point2y-point1y/point2x-point1x
+        else if(((float)x - uiBits.clrpick.left[0] > (((uiBits.clrpick.top[1] - uiBits.clrpick.left[1]) / (uiBits.clrpick.top[0] - uiBits.clrpick.left[0])) * ((float)y - uiBits.clrpick.left[1])))
+            && ((float)x - uiBits.clrpick.right[0] < (((uiBits.clrpick.top[1] - uiBits.clrpick.right[1]) / (uiBits.clrpick.top[0] - uiBits.clrpick.right[0])) * ((float)y - uiBits.clrpick.right[1]))))
+        {
+            printf("clicked in triangle!\n");
+            printf("y-y1 %f\n", (float)y-uiBits.clrpick.left[1]);
+            printf("m %f\n", (uiBits.clrpick.top[1]-uiBits.clrpick.left[1])/(uiBits.clrpick.top[0]-uiBits.clrpick.left[0]));
+            printf("x-x1 %f\n", (float)x-uiBits.clrpick.left[0]);
+            printf("m(x-x1) %f\n", (uiBits.clrpick.top[1]-uiBits.clrpick.left[1])/(uiBits.clrpick.top[0]-uiBits.clrpick.left[0])*((float)x-uiBits.clrpick.left[0]));
+            glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, tmpState.colour);
+        }
 
         //if area of lifter charge slider (launch velocity)
     }
