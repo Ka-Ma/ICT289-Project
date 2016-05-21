@@ -12,3 +12,5 @@ struct globalState gState = {
     .angle = 5, // central preset
     .angleRand = false
 };
+
+struct globalState tmpState;

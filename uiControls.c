@@ -1,17 +1,7 @@
 #include "uiControls.h"
+#include "dispText.h"
 
 
-/*
- * Function that handles the drawing of a circle using the triangle fan
- * method. This will create a filled circle.
- *
- * Sourced from https://gist.github.com/strife25/803118
- *
- * Params:
- *	x (GLFloat) - the x position of the center point of the circle
- *	y (GLFloat) - the y position of the center point of the circle
- *	radius (GLFloat) - the radius that the painted circle will have
- */
 void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
 	int i;
 	int triangleAmount = 20; //# of triangles used to draw circle
@@ -30,17 +20,6 @@ void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
 	glEnd();
 }
 
-/*
- * Function that handles the drawing of a circle using the line loop
- * method. This will create a hollow circle.
- *
- * Sourced from https://gist.github.com/strife25/803118
- *
- * Params:
- *	x (GLFloat) - the x position of the center point of the circle
- *	y (GLFloat) - the y position of the center point of the circle
- *	radius (GLFloat) - the radius that the painted circle will have
- */
 void drawHollowCircle(GLfloat x, GLfloat y, GLfloat radius){
 	int i;
 	int lineAmount = 100; //# of triangles used to draw circle
@@ -56,4 +35,30 @@ void drawHollowCircle(GLfloat x, GLfloat y, GLfloat radius){
 			);
 		}
 	glEnd();
+}
+
+void drawCheckBox(GLshort x, GLshort y, const char* text)
+{
+    glColor3f(0,0,0);
+    glBegin(GL_LINE_LOOP);
+        glVertex2s(x, y);
+        glVertex2s(x+20, y);
+        glVertex2s(x+20, y+20);
+        glVertex2s(x, y+20);
+    glEnd();
+    displayText(text, x+25, y+5);
+}
+
+void drawCheck(GLshort x, GLshort y)
+{
+    printf("in drawCheck check is x %d, y %d\n", x, y);
+    glColor3f(0,0,0);
+    glBegin(GL_LINES);
+        glVertex2s(x, y);
+        glVertex2s(x+20, y+20);
+    glEnd();
+    glBegin(GL_LINES);
+        glVertex2s(x+20, y);
+        glVertex2s(x, y+20);
+    glEnd();
 }
