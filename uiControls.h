@@ -1,3 +1,10 @@
+        /**
+        @brief control elements
+        @author Katherine Mann, except where noted
+        @version 01
+        @date 13/5/2016
+        */
+
 #ifndef UICONTROLS_H
 #define UICONTROLS_H
 
