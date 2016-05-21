@@ -11,7 +11,7 @@
 
 FILE  *oFile;
 
-struct Objects objectList[MAX_MODELS];
+Objects objectList[MAX_MODELS];
 
 const char* readModelFile(char *fTitle, const int index);
 

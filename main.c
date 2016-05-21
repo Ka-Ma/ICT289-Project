@@ -3,7 +3,7 @@
 #include <GL/freeglut.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdbool.h>
+
 
 #include "objloader.h"
 #include "globalState.h" // global variables for fireworks settings and UI display states KM
@@ -12,10 +12,19 @@
 #include "uiSettings.h"
 #include "uiOptions.h"
 #include "uiQuit.h"
+#include "AABBCol.h"
 
 #define ESCAPE          27
 #define MAX_FILE_NAME   20
 #define MODEL_ONE       0
+
+//Player dimensions
+#define PLAYER_X    2
+#define PLAYER_Y    5
+#define PLAYER_Z    2
+
+//Dynamic collision index
+#define PLAYER      0
 
 int wRes = 1600; int hRes = 1000;
 // Angle of rotation for camera direction
@@ -34,6 +43,9 @@ int frame = 0, time, timebase = 0;
 int fps;
 
 bool filesUnRead = true;
+
+bool collisionsAdded = false;
+bool isColliding = false;
 
 void readModels()
 {
@@ -168,8 +180,21 @@ void computeDir(float deltaAngle)
 
 void computePos(float deltaMove)
 {
+    SetLastLocation(x, 5.0f, z, 0);     //Store player's last location for collision resolution
+
     x += deltaMove * lx * 0.1f;
     z += deltaMove * lz * 0.1f;
+
+    AddToDynamic(x - PLAYER_X, x + PLAYER_X, 5.0f - PLAYER_Y, 5.0f + PLAYER_Y, z - PLAYER_Z, z + PLAYER_Z, PLAYER);      //Add modified player Xmin, Xmax, Ymin, Ymax, Zmin, Zmax to dynamic AABB array
+    isColliding = CheckCollisions(PLAYER);       //Check player (0) collisions
+
+    if (isColliding)
+    {
+        x = ReturnXLoc(PLAYER);      //Return saved x location
+        //y = ReturnYLoc(PLAYER);      //Return saved y location
+        z = ReturnZLoc(PLAYER);      //Return saved z location
+        isColliding = false;
+    }
 }
 
 void specialKeyPress(int key, int x, int y)
@@ -236,8 +261,15 @@ void changeSize(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
+void SetStaticAABB()
+{
+    //Red test box
+    AddToStatic(45.0, 55.0, 0.0, 20.0, 50.0, 70.0); //Add Object Xmin, Xmax, Ymin, Ymax, Zmin, Zmax for AABB collisions
+}
+
 void renderScene(void)
 {
+
     if (deltaMove)
     {
         computePos(deltaMove);
@@ -247,6 +279,12 @@ void renderScene(void)
     {
         computeDir(deltaAngle);
         glutPostRedisplay();
+    }
+
+    if(!collisionsAdded)            //If static collisions not added to array
+    {
+        SetStaticAABB();
+        collisionsAdded = true;
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -264,6 +302,33 @@ void renderScene(void)
         glVertex3f(100.0f, 0.0f, 100.0f);
         glVertex3f(100.0f, 0.0f, -100.0f);
     glEnd();
+
+        //Red test box for collisions -- Leave as example for now
+        glColor3f(0.5f, 0.0f, 0.0f);
+        glBegin(GL_QUADS);
+            glVertex3f(45.0f, 0.0f, 50.0f);
+            glVertex3f(55.0f, 0.0f, 50.0f);
+            glVertex3f(55.0f, 20.0f, 50.0f);
+            glVertex3f(45.0f, 20.0f, 50.0f);
+        glEnd();
+        glBegin(GL_QUADS);
+            glVertex3f(55.0f, 0.0f, 50.0f);
+            glVertex3f(55.0f, 0.0f, 70.0f);
+            glVertex3f(55.0f, 20.0f, 70.0f);
+            glVertex3f(55.0f, 20.0f, 50.0f);
+        glEnd();
+        glBegin(GL_QUADS);
+            glVertex3f(45.0f, 0.0f, 70.0f);
+            glVertex3f(55.0f, 0.0f, 70.0f);
+            glVertex3f(55.0f, 20.0f, 70.0f);
+            glVertex3f(45.0f, 20.0f, 70.0f);
+        glEnd();
+        glBegin(GL_QUADS);
+            glVertex3f(45.0f, 0.0f, 50.0f);
+            glVertex3f(45.0f, 0.0f, 70.0f);
+            glVertex3f(45.0f, 20.0f, 70.0f);
+            glVertex3f(45.0f, 20.0f, 50.0f);
+        glEnd();
 
     for(int i = -3; i < 3; i++)
         for(int j = -3; j < 3; j++)
