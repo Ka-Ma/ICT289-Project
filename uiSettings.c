@@ -1,5 +1,6 @@
 #include "uiSettings.h"
 
+
 void displayUISettings()
 {
     // getting window dimensions
@@ -63,6 +64,9 @@ void displayUISettings()
     uiBits.randAng[1] = percUnitH*55;
     drawCheckBox(uiBits.randAng[0], uiBits.randAng[1] ,"Random Angle");
 
+    //slider bar for selection of lift charge/intial velocity
+
+
     //save button
     uiBits.saveBL[0] = percUnitW*70;
     uiBits.saveBL[1] = percUnitH*36;
@@ -115,6 +119,8 @@ void keysUISettings(unsigned char key, int x, int y)
 
 void mouseUISettings(int button, int state, int x, int y)
 {
+    int i;
+
     if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
     {
         //height-y to convert coordinates to match screen and mouse
@@ -141,8 +147,22 @@ void mouseUISettings(int button, int state, int x, int y)
         }
         //area of radio buttons for angles
         else if(x> uiBits.anglesBL[0] && x < uiBits.anglesTR[0] && y > uiBits.anglesBL[1] && y < uiBits.anglesTR[1]){
-            printf("clicked in angles area");
-            //which clicked?
+            //checking each preset
+            for(i=0;i<9;i++){
+                // is click in area of this radio button?
+                if(10 > sqrt(pow((x - uiBits.anglesPS[0][i]),2) + (pow((y - uiBits.anglesPS[1][i]),2)))){
+                    tmpState.angle = i+1;
+                }
+            }
+        }
+        //toggle random angle checkbox
+        else if(x > uiBits.randAng[0] && x < uiBits.randAng[0] + 20 && y > uiBits.randAng[1] && y < uiBits.randAng[1] + 20){
+            if(!tmpState.angleRand){
+                tmpState.angleRand = true;
+            }
+            else{
+                tmpState.angleRand = false;
+            }
         }
         //area of colour picker (triangle) formula of a line point1x-x = m(y-point1y) where m = point2y-point1y/point2x-point1x
         else if(((float)x - uiBits.clrpick.left[0] > (((uiBits.clrpick.top[1] - uiBits.clrpick.left[1]) / (uiBits.clrpick.top[0] - uiBits.clrpick.left[0])) * ((float)y - uiBits.clrpick.left[1])))
@@ -156,9 +176,10 @@ void mouseUISettings(int button, int state, int x, int y)
             glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, tmpState.colour);
         }
 
-        //if area of lifter charge slider (launch velocity)
-    }
-}
+        //area of lifter charge slider (launch velocity)
+
+    }// end if L-button clicked
+}// end mouseUISettings
 
 void drawColourPicker(GLshort percUnitW, GLshort percUnitH)
 {
@@ -236,7 +257,7 @@ void drawColourPicker(GLshort percUnitW, GLshort percUnitH)
         glColor3fv(mlr);
         glVertex2fv(uiBits.clrpick.mlr);
     glEnd();
-}
+}// end drawColourPicker
 
 void drawAnglePresets(GLshort percUnitW, GLshort percUnitH)
 {
@@ -244,35 +265,45 @@ void drawAnglePresets(GLshort percUnitW, GLshort percUnitH)
     GLshort gapW = ((percUnitW*20)-30)/4;
     GLshort gapH = ((percUnitH*20)-30)/4;
 
+    //set angle area box
+    uiBits.anglesBL[0] = percUnitW*55;
+    uiBits.anglesBL[1] = percUnitH*60;
+    uiBits.anglesTR[0] = percUnitW*75;
+    uiBits.anglesTR[1] = percUnitH*75;
+
     //draw angle area box
     glBegin(GL_LINE_LOOP);
-        glVertex2s(percUnitW*55, percUnitH*60);
-        glVertex2s(percUnitW*75, percUnitH*60);
-        glVertex2s(percUnitW*75, percUnitH*75);
-        glVertex2s(percUnitW*55, percUnitH*75);
+        glVertex2sv(uiBits.anglesBL);
+        glVertex2s(uiBits.anglesTR[0], uiBits.anglesBL[1]);
+        glVertex2sv(uiBits.anglesTR);
+        glVertex2s(uiBits.anglesBL[0], uiBits.anglesTR[1]);
     glEnd();
 
     for (i=0; i<3;i++){
         for (j=0;j<3;j++){
-            drawHollowCircle(percUnitW*60+i*gapW, percUnitH*63+j*gapH, 10);
+            //set angle preset location
+            uiBits.anglesPS[0][i*3+j] = percUnitW*60+i*gapW; // x
+            uiBits.anglesPS[1][i*3+j] = percUnitH*63+j*gapH; // y
+            // draw radio button for angle preset
+            drawHollowCircle(uiBits.anglesPS[0][i*3+j], uiBits.anglesPS[1][i*3+j], 10);
             if(!tmpState.angleRand){
                 if(tmpState.angle == (i*3)+j+1){
-                        drawFilledCircle(percUnitW*60+i*gapW, percUnitH*63+j*gapH, 8);
+                        drawFilledCircle(uiBits.anglesPS[0][i*3+j], uiBits.anglesPS[1][i*3+j], 8);
                 }
             }
             else{
                 //if random angle selected draw cross
                 drawCheck(uiBits.randAng[0], uiBits.randAng[1]);
                 //also need to draw a cross through the circles box to indicate out of use
-                glBegin(GL_LINE);
-                    glVertex2s(percUnitW*55, percUnitH*60);
-                    glVertex2s(percUnitW*75, percUnitH*75);
+                glBegin(GL_LINES);
+                    glVertex2sv(uiBits.anglesBL);
+                    glVertex2sv(uiBits.anglesTR);
                 glEnd();
-                glBegin(GL_LINE);
-                    glVertex2s(percUnitW*75, percUnitH*60);
-                    glVertex2s(percUnitW*55, percUnitH*75);
+                glBegin(GL_LINES);
+                    glVertex2s(uiBits.anglesTR[0], uiBits.anglesBL[1]);
+                    glVertex2s(uiBits.anglesBL[0], uiBits.anglesTR[1]);
                 glEnd();
-            }
-        }
-    }
-}
+            } // end if
+        }// end for
+    }// end for
+}// end drawPresetAngles

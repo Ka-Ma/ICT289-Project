@@ -8,6 +8,8 @@
 #ifndef UISETTINGS_H
 #define UISETTINGS_H
 
+#include <stdio.h>
+#include <math.h>
 #include "globalState.h"
 #include "dispText.h"
 #include "uiControls.h"
