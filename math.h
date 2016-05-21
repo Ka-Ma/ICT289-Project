@@ -3,17 +3,30 @@
 
 #define PI 3.14159265358979323846
 
-struct Vector3{double x, y, z;};
+typedef struct Vector3{double x, y, z;} Vector3;
 
-struct FaceVec{
+typedef struct FaceVec{
     int faceType;
-    struct Vector3 coord1, coord2, coord3;
-};
+    Vector3 coord1, coord2, coord3;
+} FaceVec;
 
-struct Objects{
-    struct Vector3 *coords;
-    struct FaceVec *facets;
+typedef struct Objects{
+    Vector3 *coords;
+    FaceVec *facets;
     int vLines, fLines, uLines;
-};
+} Objects;
+
+typedef struct MinMax{
+    double min, max;
+} MinMax;
+
+typedef struct StaticAABB{
+    MinMax x, y, z;
+} StaticAABB;
+
+typedef struct DynamicAABB{
+    MinMax x, y, z;
+    float locX, locY, locZ;
+} DynamicAABB;
 
 #endif // MATH_H
