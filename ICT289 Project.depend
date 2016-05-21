@@ -89,7 +89,7 @@
 	"uiOptions.h"
 	"uiQuit.h"
 
-1463305746 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.h
+1463795985 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.h
 	"globalState.h"
 	"dispText.h"
 	"uiControls.h"
@@ -102,7 +102,7 @@
 	"dispText.h"
 	"globalState.h"
 
-1463403801 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.c
+1463790310 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uisettings.c
 	"uiSettings.h"
 
 1463106288 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uikeyshandler.c
@@ -123,10 +123,11 @@
 1463381336 c:\users\kat\documents\projects\ict289grpproj\ict289-project\globalstate.h
 	<stdbool.h>
 
-1463296097 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uicontrols.h
+1463790604 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uicontrols.h
 	"math.h"
 	<GL/freeglut.h>
 
-1463296081 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uicontrols.c
+1463790604 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uicontrols.c
 	"uiControls.h"
+	"dispText.h"
 

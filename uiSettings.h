@@ -24,9 +24,20 @@ typedef struct triangle{
     point2 centre;
 };
 
+struct globalState tmpState;
+struct uiBits {
+    GLshort height; // height of window
+    GLshort saveBL[2]; //x,y coords of bottom left of save button
+    GLshort saveTR[2]; //x,y coords of top right of save button
+    GLshort cancelBL[2]; //x,y coords of bottom left of cancel button
+    GLshort cancelTR[2]; //x,y coords of top right of cancel button
+    struct triangle clrpick;
+    }uiBits;
+
 void displayUISettings();
 void keysUISettings(unsigned char key, int x, int y);
 void mouseUISettings(int button, int state, int x, int y);
+void drawColourPicker(GLshort percUnitW, GLshort percUnitH);
 
 extern struct triangle clrpick;
 extern struct globalState tmpState;
