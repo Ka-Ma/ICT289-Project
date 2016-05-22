@@ -1,5 +1,7 @@
 #include "uiControls.h"
 #include "dispText.h"
+#include <math.h>
+#include <stdbool.h>
 
 
 void drawFilledCircle(GLfloat x, GLfloat y, GLfloat radius){
@@ -46,7 +48,7 @@ void drawCheckBox(GLshort x, GLshort y, const char* text)
         glVertex2s(x+20, y+20);
         glVertex2s(x, y+20);
     glEnd();
-    displayText(text, x+25, y+5);
+    displayText(text, x+25, y+5, 'm');
 }
 
 void drawCheck(GLshort x, GLshort y)
@@ -59,5 +61,53 @@ void drawCheck(GLshort x, GLshort y)
     glBegin(GL_LINES);
         glVertex2s(x+20, y);
         glVertex2s(x, y+20);
+    glEnd();
+}
+
+void drawSlider(GLshort left[], GLshort right[])
+{
+    int i,j;
+    GLshort between;
+    bool done;
+
+    //to find ideal between
+    for(j=8; j<20; j++)
+    {
+        if((right[0]-left[0])%j == 0 && !done)
+        {
+            between = (right[0]-left[0])/j;
+            done = true;
+        }
+    }
+
+    //if can't find ideal between
+    if(!done)
+        between = 100;
+
+    glColor3f(0,0,0);
+
+    //draw main line
+    glBegin(GL_LINES);
+        glVertex2sv(left);
+        glVertex2sv(right);
+    glEnd();
+
+    //draw interval markers
+    for(i = 0; i <= (right[0] - left[0]); i = i + between)
+    {
+        glBegin(GL_LINES);
+            glVertex2s(left[0]+i, left[1]+5);
+            glVertex2s(left[0]+i, left[1]-5);
+        glEnd();
+    }
+}
+
+void drawMarker(GLshort x, GLshort y)
+{
+    glBegin(GL_QUADS);
+        glVertex2s(x-10, y-7);
+        glVertex2s(x+10, y-7);
+        glVertex2s(x+10, y+7);
+        glVertex2s(x-10, y+7);
     glEnd();
 }

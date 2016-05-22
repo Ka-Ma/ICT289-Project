@@ -29,7 +29,7 @@ void displayUISettings()
     glEnd();
 
     glColor3f(0,0,1);
-    displayText("SETTINGS:", percUnitW*22, percUnitH*78);
+    displayText("SETTINGS:", percUnitW*22, percUnitH*78, 'l');
 
     //draw chosen colour if not random
     if(!tmpState.colourRand){
@@ -42,7 +42,7 @@ void displayUISettings()
             glVertex2s(uiBits.chosenClr[0]+20, uiBits.chosenClr[1]+20);
             glVertex2s(uiBits.chosenClr[0], uiBits.chosenClr[1]+20);
         glEnd();
-        displayText("Chosen Colour", uiBits.chosenClr[0]+25, uiBits.chosenClr[1]+2);
+        displayText("Chosen Colour", uiBits.chosenClr[0]+25, uiBits.chosenClr[1]+2, 'm');
     }
 
     //for colourpicker triangle
@@ -65,35 +65,83 @@ void displayUISettings()
     drawCheckBox(uiBits.randAng[0], uiBits.randAng[1] ,"Random Angle");
 
     //slider bar for selection of lift charge/intial velocity
+    uiBits.velocityL[0]= percUnitW*23;
+    uiBits.velocityL[1]= percUnitH*42;
+    uiBits.velocityR[0]= percUnitW*65;
+    uiBits.velocityR[1]= percUnitH*42;
+    snprintf(uiBits.velocityMnTxt, 6, "%4.1f", tmpState.velocityMin);
+    snprintf(uiBits.velocityMxTxt, 6, "%4.1f", tmpState.velocityMax);
+    displayText("Lift Charge giving initial velocity in m/s:", uiBits.velocityL[0]-20, uiBits.velocityL[1]+15, 'm');
+    drawSlider(uiBits.velocityL, uiBits.velocityR);
+    displayText(uiBits.velocityMnTxt, uiBits.velocityL[0]-30, uiBits.velocityL[1]-4, 'm');
+    displayText(uiBits.velocityMxTxt, uiBits.velocityR[0]+5, uiBits.velocityR[1]-4, 'm');
+
+    //x coords of chosen velocity determined by (chosenValue - minValue)*((xRight - xLeft)/(maxValue-minValue)) + xLeft
+    uiBits.velocityChX = ((tmpState.velocityCh - tmpState.velocityMin)*(((float)uiBits.velocityR[0]-(float)uiBits.velocityL[0])/(tmpState.velocityMax-tmpState.velocityMin))+(float)uiBits.velocityL[0]);
+    drawMarker(uiBits.velocityChX, uiBits.velocityL[1]);
+    snprintf(uiBits.velocityChTxt, 6, "%3.1f", tmpState.velocityCh);
+    displayText(uiBits.velocityChTxt, uiBits.velocityChX-10, uiBits.velocityL[1]-17, 'm');
+
+    //slider bar for selection of fuser timer
+    uiBits.fuseL[0]= percUnitW*23;
+    uiBits.fuseL[1]= percUnitH*32;
+    uiBits.fuseR[0]= percUnitW*65;
+    uiBits.fuseR[1]= percUnitH*32;
+    snprintf(uiBits.fuseMnTxt, 6, "%5.1f", tmpState.fuseMin);
+    snprintf(uiBits.fuseMxTxt, 6, "%5.1f", tmpState.fuseMax);
+    displayText("Fuse timer from launch to explosion in milliseconds:", uiBits.fuseL[0]-20, uiBits.fuseL[1]+15, 'm');
+    drawSlider(uiBits.fuseL, uiBits.fuseR);
+    displayText(uiBits.fuseMnTxt, uiBits.fuseL[0]-40, uiBits.fuseL[1]-4, 'm');
+    displayText(uiBits.fuseMxTxt, uiBits.fuseR[0]+5, uiBits.fuseR[1]-4, 'm');
+
+    //x coords of chosen fuse determined by (chosenValue - minValue)*((xRight - xLeft)/(maxValue-minValue)) + xLeft
+    uiBits.fuseChX = ((tmpState.fuseCh - tmpState.fuseMin)*(((float)uiBits.fuseR[0]-(float)uiBits.fuseL[0])/(tmpState.fuseMax-tmpState.fuseMin))+(float)uiBits.fuseL[0]);
+    drawMarker(uiBits.fuseChX, uiBits.fuseL[1]);
+    snprintf(uiBits.fuseChTxt, 6, "%5.1f", tmpState.fuseCh);
+    displayText(uiBits.fuseChTxt, uiBits.fuseChX-10, uiBits.fuseL[1]-17, 'm');
 
 
     //save button
     uiBits.saveBL[0] = percUnitW*70;
-    uiBits.saveBL[1] = percUnitH*36;
-    uiBits.saveTR[0] = percUnitW*78;
-    uiBits.saveTR[1] = percUnitH*49;
+    uiBits.saveBL[1] = percUnitH*31;
+    uiBits.saveTR[0] = percUnitW*79;
+    uiBits.saveTR[1] = percUnitH*39;
     glColor3f(0, 0.5, 0);
     glBegin(GL_QUADS);
-        glVertex2s(percUnitW*70, percUnitH*36);
-        glVertex2s(percUnitW*78, percUnitH*36);
-        glVertex2s(percUnitW*78, percUnitH*49);
-        glVertex2s(percUnitW*70, percUnitH*49);
+        glVertex2sv(uiBits.saveBL);
+        glVertex2s(uiBits.saveTR[0], uiBits.saveBL[1]);
+        glVertex2sv(uiBits.saveTR);
+        glVertex2s(uiBits.saveBL[0], uiBits.saveTR[1]);
     glEnd();
-    displayText("SAVE ('s')", percUnitW*72, percUnitH*42);
+    displayText("Save", uiBits.saveBL[0]+5, uiBits.saveBL[1]+5,'l');
+    //underline S
+    glLineWidth(2);
+    glBegin(GL_LINES);
+        glVertex2s(uiBits.saveBL[0]+6,uiBits.saveBL[1]+3);
+        glVertex2s(uiBits.saveBL[0]+18,uiBits.saveBL[1]+3);
+    glEnd();
+    glLineWidth(1);
 
     //cancel button
     uiBits.cancelBL[0] = percUnitW*70;
-    uiBits.cancelBL[1] = percUnitH*21;
-    uiBits.cancelTR[0] = percUnitW*78;
-    uiBits.cancelTR[1] = percUnitH*34;
-    glColor3f(0.5, 0, 0);
+    uiBits.cancelBL[1] = percUnitH*22;
+    uiBits.cancelTR[0] = percUnitW*79;
+    uiBits.cancelTR[1] = percUnitH*30;
+    glColor3f(0.6, 0, 0);
     glBegin(GL_QUADS);
-        glVertex2s(percUnitW*70, percUnitH*21);
-        glVertex2s(percUnitW*78, percUnitH*21);
-        glVertex2s(percUnitW*78, percUnitH*34);
-        glVertex2s(percUnitW*70, percUnitH*34);
+        glVertex2sv(uiBits.cancelBL);
+        glVertex2s(uiBits.cancelTR[0], uiBits.cancelBL[1]);
+        glVertex2sv(uiBits.cancelTR);
+        glVertex2s(uiBits.cancelBL[0], uiBits.cancelTR[1]);
     glEnd();
-    displayText("CANCEL ('c')", percUnitW*72, percUnitH*29);
+    displayText("Cancel", uiBits.cancelBL[0]+5, uiBits.cancelBL[1]+5,'l');
+    //underline C
+    glLineWidth(2);
+    glBegin(GL_LINES);
+        glVertex2s(uiBits.cancelBL[0]+6,uiBits.cancelBL[1]+3);
+        glVertex2s(uiBits.cancelBL[0]+18,uiBits.cancelBL[1]+3);
+    glEnd();
+    glLineWidth(1);
 
     // returning to 3D
     glMatrixMode(GL_PROJECTION);
@@ -165,19 +213,26 @@ void mouseUISettings(int button, int state, int x, int y)
             }
         }
         //area of colour picker (triangle) formula of a line point1x-x = m(y-point1y) where m = point2y-point1y/point2x-point1x
-        else if(((float)x - uiBits.clrpick.left[0] > (((uiBits.clrpick.top[1] - uiBits.clrpick.left[1]) / (uiBits.clrpick.top[0] - uiBits.clrpick.left[0])) * ((float)y - uiBits.clrpick.left[1])))
-            && ((float)x - uiBits.clrpick.right[0] < (((uiBits.clrpick.top[1] - uiBits.clrpick.right[1]) / (uiBits.clrpick.top[0] - uiBits.clrpick.right[0])) * ((float)y - uiBits.clrpick.right[1]))))
+        else if(y < uiBits.clrpick.top[1] && y > uiBits.clrpick.left[1]
+                && ((float)x - uiBits.clrpick.left[0] > (((uiBits.clrpick.top[1] - uiBits.clrpick.left[1]) / (uiBits.clrpick.top[0] - uiBits.clrpick.left[0])) * ((float)y - uiBits.clrpick.left[1])))
+                && ((float)x - uiBits.clrpick.right[0] < (((uiBits.clrpick.top[1] - uiBits.clrpick.right[1]) / (uiBits.clrpick.top[0] - uiBits.clrpick.right[0])) * ((float)y - uiBits.clrpick.right[1]))))
         {
-            printf("clicked in triangle!\n");
-            printf("y-y1 %f\n", (float)y-uiBits.clrpick.left[1]);
-            printf("m %f\n", (uiBits.clrpick.top[1]-uiBits.clrpick.left[1])/(uiBits.clrpick.top[0]-uiBits.clrpick.left[0]));
-            printf("x-x1 %f\n", (float)x-uiBits.clrpick.left[0]);
-            printf("m(x-x1) %f\n", (uiBits.clrpick.top[1]-uiBits.clrpick.left[1])/(uiBits.clrpick.top[0]-uiBits.clrpick.left[0])*((float)x-uiBits.clrpick.left[0]));
             glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, tmpState.colour);
         }
 
         //area of lifter charge slider (launch velocity)
+        else if(x <= uiBits.velocityR[0] && x >= uiBits.velocityL[0] && y < uiBits.velocityL[1]+5 && y > uiBits.velocityL[1]-5)
+        {
+            // chosen velocity given by ((x - minX) / (rangeX/rangeValue))+ minValue
+            tmpState.velocityCh = ((x-uiBits.velocityL[0])/((uiBits.velocityR[0]-uiBits.velocityL[0])/(tmpState.velocityMax-tmpState.velocityMin)))+tmpState.velocityMin;
+        }
 
+        //area of fuse time slider
+        else if(x <= uiBits.fuseR[0] && x >= uiBits.fuseL[0] && y < uiBits.fuseL[1]+5 && y > uiBits.fuseL[1]-5)
+        {
+            // chosen fuse given by ((x - minX) / (rangeX/rangeValue))+ minValue
+            tmpState.fuseCh = ((x-uiBits.fuseL[0])/((uiBits.fuseR[0]-uiBits.fuseL[0])/(tmpState.fuseMax-tmpState.fuseMin)))+tmpState.fuseMin;
+        }
     }// end if L-button clicked
 }// end mouseUISettings
 
@@ -307,3 +362,5 @@ void drawAnglePresets(GLshort percUnitW, GLshort percUnitH)
         }// end for
     }// end for
 }// end drawPresetAngles
+
+

@@ -53,4 +53,12 @@ void drawCheckBox(GLshort x, GLshort y, const char* text);
 */
 void drawCheck(GLshort x, GLshort y);
 
+/**
+@brief Function to draw the bar of a slider
+@param left[2] - x,y position of left
+@param right[2]- x,y position of right
+*/
+void drawSlider(GLshort left[], GLshort right[]);
+void drawMarker(GLshort x, GLshort y);
+
 #endif // UICONTROLS_H
