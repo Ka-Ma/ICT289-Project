@@ -29,13 +29,14 @@
 1458991720 source:d:\projects\university\ict289\project\ict289-project\objloader.c
 	"objloader.h"
 
-1463823515 d:\projects\university\ict289\project\ict289-project\objloader.h
+1463911688 d:\projects\university\ict289\project\ict289-project\objloader.h
 	<stdio.h>
 	<stdlib.h>
 	<GL/freeglut.h>
 	"math.h"
 
-1463838344 d:\projects\university\ict289\project\ict289-project\math.h
+1463924600 d:\projects\university\ict289\project\ict289-project\math.h
+	<stdbool.h>
 
 1461809218 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\objloader.c
 	"objloader.h"
@@ -135,25 +136,24 @@
 	<math.h>
 	<stdbool.h>
 
-1463822775 source:d:\projects\university\ict289\project\ict289-project\disptext.c
+1463911705 source:d:\projects\university\ict289\project\ict289-project\disptext.c
 	"dispText.h"
 
-1463822775 d:\projects\university\ict289\project\ict289-project\disptext.h
+1463911705 d:\projects\university\ict289\project\ict289-project\disptext.h
 	<GL/freeglut.h>
 
-1463822775 source:d:\projects\university\ict289\project\ict289-project\globalstate.c
+1463911705 source:d:\projects\university\ict289\project\ict289-project\globalstate.c
 	"globalState.h"
 
-1463822775 d:\projects\university\ict289\project\ict289-project\globalstate.h
+1463911705 d:\projects\university\ict289\project\ict289-project\globalstate.h
 	<stdbool.h>
 
-1463842497 source:d:\projects\university\ict289\project\ict289-project\main.c
+1463924200 source:d:\projects\university\ict289\project\ict289-project\main.c
 	<stdio.h>
 	<stdlib.h>
 	<GL/freeglut.h>
 	<fcntl.h>
 	<unistd.h>
-	<stdbool.h>
 	"objloader.h"
 	"globalState.h"
 	"uiKeysHandler.h"
@@ -170,12 +170,14 @@
 	"uiOptions.h"
 	"uiQuit.h"
 
-1463822775 d:\projects\university\ict289\project\ict289-project\uisettings.h
+1463911705 d:\projects\university\ict289\project\ict289-project\uisettings.h
+	<stdio.h>
+	<math.h>
 	"globalState.h"
 	"dispText.h"
 	"uiControls.h"
 
-1463822775 d:\projects\university\ict289\project\ict289-project\uicontrols.h
+1463911705 d:\projects\university\ict289\project\ict289-project\uicontrols.h
 	"math.h"
 	<GL/freeglut.h>
 
@@ -194,9 +196,11 @@
 	"uiOptions.h"
 	"uiQuit.h"
 
-1463822775 source:d:\projects\university\ict289\project\ict289-project\uicontrols.c
+1463911705 source:d:\projects\university\ict289\project\ict289-project\uicontrols.c
 	"uiControls.h"
 	"dispText.h"
+	<math.h>
+	<stdbool.h>
 
 1463822775 source:d:\projects\university\ict289\project\ict289-project\uikeyshandler.c
 	"uiKeysHandler.h"
@@ -204,19 +208,19 @@
 1463822775 source:d:\projects\university\ict289\project\ict289-project\uimousehandler.c
 	"uiMouseHandler.h"
 
-1463822775 source:d:\projects\university\ict289\project\ict289-project\uioptions.c
+1463911705 source:d:\projects\university\ict289\project\ict289-project\uioptions.c
 	"uiOptions.h"
 
-1463822775 source:d:\projects\university\ict289\project\ict289-project\uiquit.c
+1463911705 source:d:\projects\university\ict289\project\ict289-project\uiquit.c
 	"uiQuit.h"
 
-1463822775 source:d:\projects\university\ict289\project\ict289-project\uisettings.c
+1463911705 source:d:\projects\university\ict289\project\ict289-project\uisettings.c
 	"uiSettings.h"
 
-1463851681 source:d:\projects\university\ict289\project\ict289-project\aabbcol.c
+1463924634 source:d:\projects\university\ict289\project\ict289-project\aabbcol.c
 	"AABBCol.h"
 
-1463851151 d:\projects\university\ict289\project\ict289-project\aabbcol.h
+1463924610 d:\projects\university\ict289\project\ict289-project\aabbcol.h
 	<stdbool.h>
 	"math.h"
 

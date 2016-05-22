@@ -1,6 +1,10 @@
 #ifndef MATH_H
 #define MATH_H
 
+#include <stdbool.h>
+
+#define GAMEOBJECTS     22      //Total GameObjects, Dynamic and Static
+
 #define PI 3.14159265358979323846
 
 typedef struct Vector3{double x, y, z;} Vector3;
@@ -20,13 +24,12 @@ typedef struct MinMax{
     double min, max;
 } MinMax;
 
-typedef struct StaticAABB{
+typedef struct GameObject{
     MinMax x, y, z;
-} StaticAABB;
+    float xLoc, yLoc, zLoc, upVel;
+    bool isStatic;
+} GameObject;
 
-typedef struct DynamicAABB{
-    MinMax x, y, z;
-    float locX, locY, locZ;
-} DynamicAABB;
+GameObject gameO[GAMEOBJECTS];
 
 #endif // MATH_H
