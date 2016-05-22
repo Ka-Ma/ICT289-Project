@@ -27,7 +27,7 @@ void displayUIQuit()
     glEnd();
 
     glColor3f(0,0,1);
-    displayText("QUIT: esc to end program", w/2, h/2);
+    displayText("QUIT: esc to end program", w/2, h/2,'l');
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // returning to 3D

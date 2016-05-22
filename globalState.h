@@ -21,10 +21,13 @@ typedef struct globalState{
     bool colourRand;
     int angle; // 1-9 to represent presets
     bool angleRand;
-    float velocityMin;
-    float velocityMax;
-    float velocityCh;
-};
+    float velocityMin; // m/s
+    float velocityMax; // m/s
+    float velocityCh; // m/s
+    float fuseMin; // milliseconds
+    float fuseMax; // milliseconds
+    float fuseCh; // milliseconds
+}globalState;
 
 extern struct globalState gState;
 extern struct globalState tmpState;

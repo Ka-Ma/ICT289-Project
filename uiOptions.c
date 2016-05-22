@@ -27,7 +27,7 @@ void displayUIOptions()
     glEnd();
 
     glColor3f(0,0,1);
-    displayText("OPTIONS: q to quit, esc to resume", w/2, h/2);
+    displayText("OPTIONS: q to quit, esc to resume", w/2, h/2, 'l');
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // returning to 3D

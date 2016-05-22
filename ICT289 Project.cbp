@@ -32,6 +32,10 @@
 			<Add option="-Wall" />
 			<Add option="-std=c99" />
 		</Compiler>
+		<Unit filename="AABBCol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="AABBCol.h" />
 		<Unit filename="dispText.c">
 			<Option compilerVar="CC" />
 		</Unit>
