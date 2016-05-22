@@ -23,9 +23,6 @@
 #define PLAYER_Y    5
 #define PLAYER_Z    2
 
-//Dynamic collision index
-#define PLAYER      0
-
 int wRes = 1600; int hRes = 1000;
 // Angle of rotation for camera direction
 float angle = 0.0f;
@@ -41,6 +38,9 @@ int xOrigin = -1;
 int t;
 int frame = 0, time, timebase = 0;
 int fps;
+
+//Dynamic collision indexes
+int player_col;
 
 bool filesUnRead = true;
 
@@ -180,19 +180,19 @@ void computeDir(float deltaAngle)
 
 void computePos(float deltaMove)
 {
-    SetLastLocation(x, 5.0f, z, 0);     //Store player's last location for collision resolution
+    SetLastLocation(x, 5.0f, z, player_col);     //Store player's last location for collision resolution
 
     x += deltaMove * lx * 0.1f;
     z += deltaMove * lz * 0.1f;
 
-    AddToDynamic(x - PLAYER_X, x + PLAYER_X, 5.0f - PLAYER_Y, 5.0f + PLAYER_Y, z - PLAYER_Z, z + PLAYER_Z, PLAYER);      //Add modified player Xmin, Xmax, Ymin, Ymax, Zmin, Zmax to dynamic AABB array
-    isColliding = CheckCollisions(PLAYER);       //Check player (0) collisions
+    UpdateDynamic(x - PLAYER_X, x + PLAYER_X, 5.0f - PLAYER_Y, 5.0f + PLAYER_Y, z - PLAYER_Z, z + PLAYER_Z, player_col);      //Add modified player Xmin, Xmax, Ymin, Ymax, Zmin, Zmax to dynamic AABB array
+    isColliding = CheckCollisions(player_col);       //Check player (0) collisions
 
     if (isColliding)
     {
-        x = ReturnXLoc(PLAYER);      //Return saved x location
-        //y = ReturnYLoc(PLAYER);      //Return saved y location
-        z = ReturnZLoc(PLAYER);      //Return saved z location
+        x = ReturnXLoc(player_col);      //Return saved x location
+        //y = ReturnYLoc(player_col);      //Return saved y location
+        z = ReturnZLoc(player_col);      //Return saved z location
         isColliding = false;
     }
 }
@@ -261,14 +261,25 @@ void changeSize(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void SetStaticAABB()
+void SetAABBs()
 {
+    //Dynamic AABBs
+    //Player
+    player_col = AddToDynamic(x - PLAYER_X, x + PLAYER_X, 5.0f - PLAYER_Y, 5.0f + PLAYER_Y, z - PLAYER_Z, z + PLAYER_Z);
+
+    //Static AABBs
     //Red test box
     AddToStatic(45.0, 55.0, 0.0, 20.0, 50.0, 70.0); //Add Object Xmin, Xmax, Ymin, Ymax, Zmin, Zmax for AABB collisions
 }
 
 void renderScene(void)
 {
+
+    if(!collisionsAdded)            //If static collisions not added to array
+    {                               //NOTE: Must be initiated before computePos called
+        SetAABBs();
+        collisionsAdded = true;
+    }
 
     if (deltaMove)
     {
@@ -279,12 +290,6 @@ void renderScene(void)
     {
         computeDir(deltaAngle);
         glutPostRedisplay();
-    }
-
-    if(!collisionsAdded)            //If static collisions not added to array
-    {
-        SetStaticAABB();
-        collisionsAdded = true;
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
