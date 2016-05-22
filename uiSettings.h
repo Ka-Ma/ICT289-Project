@@ -24,8 +24,9 @@ typedef struct triangle{
     point2 mlr; // mid point between left and right
     point2 mtr; // mid point between top and right
     point2 centre; // centroid of triangle
-};
+}triangle;
 
+//used to know if mouse has clicked on a particular control
 struct uiBits {
     GLshort height; // height of window for mouse/window coord match up
     struct triangle clrpick;
@@ -37,6 +38,16 @@ struct uiBits {
     GLshort randAng[2]; //x,y coords of checkbox for random angle
     GLshort velocityL[2]; //x,y coords of left end  of velocity slider
     GLshort velocityR[2]; //x,y coords of right end of velocity slider
+    GLfloat velocityChX; // x coord of centre of marker
+    char velocityChTxt[6]; // chosen value converted to char for display
+    char velocityMnTxt[6]; // min value converted to char for display
+    char velocityMxTxt[6]; // max value converted to char for display
+    GLshort fuseL[2]; //x,y coords of left end  of fuse slider
+    GLshort fuseR[2]; //x,y coords of right end of fuse slider
+    GLfloat fuseChX; // x coord of centre of marker
+    char fuseChTxt[6]; // chosen value converted to char for display
+    char fuseMnTxt[6]; // min value converted to char for display
+    char fuseMxTxt[6]; // max value converted to char for display
     GLshort saveBL[2]; //x,y coords of bottom left of save button
     GLshort saveTR[2]; //x,y coords of top right of save button
     GLshort cancelBL[2]; //x,y coords of bottom left of cancel button
@@ -48,6 +59,7 @@ void keysUISettings(unsigned char key, int x, int y);
 void mouseUISettings(int button, int state, int x, int y);
 void drawColourPicker(GLshort percUnitW, GLshort percUnitH);
 void drawAnglePresets(GLshort percUnitW, GLshort percUnitH);
+
 
 //extern struct globalState tmpState;
 
