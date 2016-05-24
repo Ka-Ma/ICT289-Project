@@ -29,7 +29,7 @@ float angle = 0.0f;
 // Actual vector representing the camera's direction
 float lx = 0.0f, lz = -1.0f;
 // XZ position of the camera
-float x = 0.0f, z = 5.0f;
+float x_loc = 0.0f, y_loc = 5.0f, z_loc = 5.0f;
 // Key states. Will be 0 when no keys are being pressed
 float deltaAngle = 0.0f;
 float deltaMove = 0;
@@ -180,19 +180,19 @@ void computeDir(float deltaAngle)
 
 void computePos(float deltaMove)
 {
-    SetLastLocation(x, 5.0f, z, player_col);     //Store player's last location for collision resolution
+    SetLastLocation(x_loc, y_loc, z_loc, player_col);     //Store player's last location for collision resolution
 
-    x += deltaMove * lx * 0.1f;
-    z += deltaMove * lz * 0.1f;
+    x_loc += deltaMove * lx * 0.1f;
+    z_loc += deltaMove * lz * 0.1f;
 
-    UpdateDynamic(x - PLAYER_X, x + PLAYER_X, 5.0f - PLAYER_Y, 5.0f + PLAYER_Y, z - PLAYER_Z, z + PLAYER_Z, player_col);      //Add modified player Xmin, Xmax, Ymin, Ymax, Zmin, Zmax to dynamic AABB array
+    UpdateDynamic(x_loc - PLAYER_X, x_loc + PLAYER_X, y_loc - PLAYER_Y, y_loc + PLAYER_Y, z_loc - PLAYER_Z, z_loc + PLAYER_Z, player_col);      //Add modified player Xmin, Xmax, Ymin, Ymax, Zmin, Zmax to dynamic AABB array
     isColliding = CheckCollisions(player_col);       //Check player (0) collisions
 
     if (isColliding)
     {
-        x = ReturnXLoc(player_col);      //Return saved x location
-        //y = ReturnYLoc(player_col);      //Return saved y location
-        z = ReturnZLoc(player_col);      //Return saved z location
+        x_loc = ReturnXLoc(player_col);      //Return saved x location
+        y_loc = ReturnYLoc(player_col);      //Return saved y location
+        z_loc = ReturnZLoc(player_col);      //Return saved z location
         isColliding = false;
     }
 }
@@ -265,7 +265,7 @@ void SetAABBs()
 {
     //Dynamic AABBs
     //Player
-    player_col = AddToDynamic(x - PLAYER_X, x + PLAYER_X, 5.0f - PLAYER_Y, 5.0f + PLAYER_Y, z - PLAYER_Z, z + PLAYER_Z);
+    player_col = AddToDynamic(x_loc - PLAYER_X, x_loc + PLAYER_X, y_loc - PLAYER_Y, y_loc + PLAYER_Y, z_loc - PLAYER_Z, z_loc + PLAYER_Z);
 
     //Static AABBs
     //Red test box
@@ -296,8 +296,8 @@ void renderScene(void)
 
     glLoadIdentity();
 
-    gluLookAt(x, 5.0f, z,
-              x + lx, 5.0f, z + lz,
+    gluLookAt(x_loc, y_loc, z_loc,
+              x_loc + lx, 5.0f, z_loc + lz,
               0.0f, 1.0f, 0.0f);
 
     glColor3f(0.0f, 0.5f, 0.0f);
@@ -360,6 +360,7 @@ void renderScene(void)
         fps = frame*1000.0/(time-timebase);
         timebase = time;
         frame = 0;
+        //y -= 1;
         glutPostRedisplay();
     }
 

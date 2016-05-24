@@ -35,7 +35,7 @@
 	<GL/freeglut.h>
 	"math.h"
 
-1463924600 d:\projects\university\ict289\project\ict289-project\math.h
+1464079762 d:\projects\university\ict289\project\ict289-project\math.h
 	<stdbool.h>
 
 1461809218 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\objloader.c
@@ -148,7 +148,7 @@
 1463911705 d:\projects\university\ict289\project\ict289-project\globalstate.h
 	<stdbool.h>
 
-1463924200 source:d:\projects\university\ict289\project\ict289-project\main.c
+1464079711 source:d:\projects\university\ict289\project\ict289-project\main.c
 	<stdio.h>
 	<stdlib.h>
 	<GL/freeglut.h>

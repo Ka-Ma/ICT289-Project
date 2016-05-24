@@ -5,7 +5,8 @@
 
 #define GAMEOBJECTS     22      //Total GameObjects, Dynamic and Static
 
-#define PI 3.14159265358979323846
+#define PI              3.14159265358979323846
+#define GRAVITY         9.81
 
 typedef struct Vector3{double x, y, z;} Vector3;
 
@@ -24,12 +25,12 @@ typedef struct MinMax{
     double min, max;
 } MinMax;
 
-typedef struct GameObject{
+typedef struct PhysicsObject{
     MinMax x, y, z;
     float xLoc, yLoc, zLoc, upVel;
     bool isStatic;
-} GameObject;
+} PhysicsObject;
 
-GameObject gameO[GAMEOBJECTS];
+PhysicsObject physiO[GAMEOBJECTS];
 
 #endif // MATH_H
