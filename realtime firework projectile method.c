@@ -20,27 +20,31 @@ void animate(int * val) //val is an array consisting of which tube, and the numb
 	int currTime = glutGet(GLUT_ELAPSED_TIME);
 	int elapsedTime = currTime - startTime;
 	
-	//defining coordinate variables for temp storage
-	double s, r, x, z; //vertical displacement and horizontal displacement
-	
-	//Calc the y coord (vertical displacement)
-	s = Math.pow(((vel * (elapsedTime/1000)) + (0.5*GRAV*(elapsedTime/1000))),2.0);
-	
-	//call depending on which firing tube
-	if(val[0]==0){
-		//Calc the horizontal displacement assuming terminal velocity is infinite
-		r = vel * Math.cos(THETA) * (elapsedTime/1000);
-		//assuming tube facing angles are hard coded as angle[tube number] with the z axis as 0 degrees
-		x = r * Math.cos(angle[val[0]]);
-		z = r * Math.cos((90-angle[val[0]]));
+	if(elapsedTime!=fuse){
+		//defining coordinate variables for temp storage
+		double s, r, x, z; //vertical displacement and horizontal displacement
 		
-		//assign coords to array
-		fire[val[1]][elapsedTime/1000] = {x,s,z};
-	} else {
-		//firework goes directly up
-		fire[val[1]][elapsedTime/1000] = {0,s,0};
+		//Calc the y coord (vertical displacement)
+		s = Math.pow(((vel[1] * (elapsedTime/1000)) + (0.5*GRAV*(elapsedTime/1000))),2.0);
+		
+		//call depending on which firing tube
+		if(val[0]==0){
+			//Calc the horizontal displacement assuming terminal velocity is infinite
+			r = vel[1] * Math.cos(THETA) * (elapsedTime/1000);
+			//assuming tube facing angles are hard coded as angle[tube number] with the z axis as 0 degrees
+			x = r * Math.cos(angle[val[0]]);
+			z = r * Math.cos((90-angle[val[0]]));
+			
+			//assign coords to array
+			fire[val[1]][elapsedTime/1000] = {x,s,z};
+		} else {
+			//firework goes directly up
+			fire[val[1]][elapsedTime/1000] = {0,s,0};
+		}
+		
+		//call function again (recursively)
+		glutTimerFunc(TIMERSECS, animate, val);
+	} else{
+		//call firework detonation func
 	}
-	
-	//call function again (recursively)
-	glutTimerFunc(TIMERSECS, animate, val);
 }
