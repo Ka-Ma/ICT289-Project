@@ -9,6 +9,8 @@ void displayUIOptions()
     GLshort percUnitW = w/100;
     GLshort percUnitH = uiO.height/100;
 
+    int iTW, iTH;
+
     glDisable(GL_DEPTH_TEST);
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -33,7 +35,13 @@ void displayUIOptions()
 
     //instructions
     //read in image
+    unsigned char* instrTex = SOIL_load_image("ICT289-Controls.PNG", &iTW, &iTH, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, iTW, iTH, 0, GL_RGB, GL_UNSIGNED_BYTE, instrTex);
+    glBindTexture(GL_TEXTURE_2D, instrTex);
+
     //draw image onto quad
+    // next try porting across image code, see if that works...
+
     displayText("Movement Controls", percUnitW*22, percUnitH* 70, 'l');
     displayText("W", percUnitW*22, percUnitH*68, 'l');
     displayText("walk forward", percUnitW*23, percUnitH*68, 'm');

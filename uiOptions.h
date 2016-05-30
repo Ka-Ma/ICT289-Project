@@ -11,6 +11,7 @@
 #include "dispText.h"
 #include "globalState.h"
 #include "uiControls.h"
+#include "soil.h"
 
 //used to know if a control has been clicked
 struct uiO {
