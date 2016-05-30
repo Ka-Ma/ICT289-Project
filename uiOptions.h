@@ -10,11 +10,12 @@
 
 #include "dispText.h"
 #include "globalState.h"
+#include "uiControls.h"
 
 //used to know if a control has been clicked
 struct uiO {
     GLshort height; // height of window for mouse/window coord match up
-    GLshort trackBL; // toggle to track firework (automatically look at it when launched)
+    GLshort trackBL[2]; // toggle to track firework (automatically look at it when launched)
 }uiO;
 
 void displayUIOptions();

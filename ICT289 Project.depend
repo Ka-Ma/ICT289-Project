@@ -96,9 +96,10 @@
 	"dispText.h"
 	"uiControls.h"
 
-1463919368 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.h
+1464571662 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.h
 	"dispText.h"
 	"globalState.h"
+	"uiControls.h"
 
 1463132219 c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.h
 	"dispText.h"
@@ -113,7 +114,7 @@
 1463106307 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uimousehandler.c
 	"uiMouseHandler.h"
 
-1463919403 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.c
+1464571606 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.c
 	"uiOptions.h"
 
 1463898512 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.c

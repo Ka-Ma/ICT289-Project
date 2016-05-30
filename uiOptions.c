@@ -32,9 +32,20 @@ void displayUIOptions()
     displayText("OPTIONS: q to quit, esc to resume", percUnitW*22, percUnitH*78, 'l');
 
     //instructions
+    //read in image
+    //draw image onto quad
     displayText("Movement Controls", percUnitW*22, percUnitH* 70, 'l');
     displayText("W", percUnitW*22, percUnitH*68, 'l');
     displayText("walk forward", percUnitW*23, percUnitH*68, 'm');
+
+    //check box for tracking firework
+    uiO.trackBL[0] = percUnitW*22;
+    uiO.trackBL[1] = percUnitH*22;
+    drawCheckBox(uiO.trackBL[0], uiO.trackBL[1] ,"Track Firework");
+    //if track selected draw cross
+    if(gState.trackFW){
+        drawCheck(uiO.trackBL[0],uiO.trackBL[1]);
+    }
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // returning to 3D
@@ -58,6 +69,20 @@ void keysUIOptions(unsigned char key, int x, int y)
 
 void mouseUIOptions(int button, int state, int x, int y)
 {
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
+        //height-y to convert coordinates to match screen and mouse
+        y = uiO.height - y;
 
+        //track fireworks
+        if(x > uiO.trackBL[0] && x < uiO.trackBL[0]+20 && y > uiO.trackBL[1] && y < uiO.trackBL[1]+20){
+            if(gState.trackFW){
+                gState.trackFW = false;
+            }
+            else{
+                gState.trackFW = true;
+            }
+        }
+    }
 }
 
