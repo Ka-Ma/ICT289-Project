@@ -27,7 +27,7 @@ typedef struct triangle{
 }triangle;
 
 //used to know if mouse has clicked on a particular control
-struct uiBits {
+struct uiS {
     GLshort height; // height of window for mouse/window coord match up
     struct triangle clrpick;
     GLshort chosenClr[2]; //x,y coords of bottom left of chosen colour square
@@ -52,7 +52,7 @@ struct uiBits {
     GLshort saveTR[2]; //x,y coords of top right of save button
     GLshort cancelBL[2]; //x,y coords of bottom left of cancel button
     GLshort cancelTR[2]; //x,y coords of top right of cancel button
-    }uiBits;
+    }uiS;
 
 void displayUISettings();
 void keysUISettings(unsigned char key, int x, int y);

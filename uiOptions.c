@@ -5,7 +5,9 @@
 void displayUIOptions()
 {
     GLshort w=glutGet(GLUT_WINDOW_WIDTH);
-    GLshort h=glutGet(GLUT_WINDOW_HEIGHT);
+    uiO.height=glutGet(GLUT_WINDOW_HEIGHT);
+    GLshort percUnitW = w/100;
+    GLshort percUnitH = uiO.height/100;
 
     glDisable(GL_DEPTH_TEST);
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -13,21 +15,37 @@ void displayUIOptions()
     glMatrixMode(GL_PROJECTION);
     glPushMatrix(); //to prepare for return to 3D
     glLoadIdentity();
-    gluOrtho2D(0,w,0,h);
+    gluOrtho2D(0,w,0,uiO.height);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glColor3f(1,1,1);
+    //Options UI background
+    glColor3f(1,1,1); //white
 
     glBegin(GL_QUADS);
-        glVertex2s(10,10);
-        glVertex2s(w-10,10);
-        glVertex2s(w-10,h-10);
-        glVertex2s(10,h-10);
+        glVertex2s(percUnitW*20,percUnitH*20);
+        glVertex2s(w-percUnitW*20,percUnitH*20);
+        glVertex2s(w-percUnitW*20,uiO.height-percUnitH*20);
+        glVertex2s(percUnitW*20,uiO.height-percUnitH*20);
     glEnd();
 
-    glColor3f(0,0,1);
-    displayText("OPTIONS: q to quit, esc to resume", w/2, h/2, 'l');
+    displayText("OPTIONS: q to quit, esc to resume", percUnitW*22, percUnitH*78, 'l');
+
+    //instructions
+    //read in image
+    //draw image onto quad
+    displayText("Movement Controls", percUnitW*22, percUnitH* 70, 'l');
+    displayText("W", percUnitW*22, percUnitH*68, 'l');
+    displayText("walk forward", percUnitW*23, percUnitH*68, 'm');
+
+    //check box for tracking firework
+    uiO.trackBL[0] = percUnitW*22;
+    uiO.trackBL[1] = percUnitH*22;
+    drawCheckBox(uiO.trackBL[0], uiO.trackBL[1] ,"Track Firework");
+    //if track selected draw cross
+    if(gState.trackFW){
+        drawCheck(uiO.trackBL[0],uiO.trackBL[1]);
+    }
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // returning to 3D
@@ -51,6 +69,20 @@ void keysUIOptions(unsigned char key, int x, int y)
 
 void mouseUIOptions(int button, int state, int x, int y)
 {
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
+        //height-y to convert coordinates to match screen and mouse
+        y = uiO.height - y;
 
+        //track fireworks
+        if(x > uiO.trackBL[0] && x < uiO.trackBL[0]+20 && y > uiO.trackBL[1] && y < uiO.trackBL[1]+20){
+            if(gState.trackFW){
+                gState.trackFW = false;
+            }
+            else{
+                gState.trackFW = true;
+            }
+        }
+    }
 }
 
