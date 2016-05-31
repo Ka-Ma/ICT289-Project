@@ -9,6 +9,8 @@ void displayUIOptions()
     GLshort percUnitW = w/100;
     GLshort percUnitH = uiO.height/100;
 
+    int iTW, iTH; //for image size
+
     glDisable(GL_DEPTH_TEST);
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -33,10 +35,15 @@ void displayUIOptions()
 
     //instructions
     //read in image
-    //draw image onto quad
-    displayText("Movement Controls", percUnitW*22, percUnitH* 70, 'l');
-    displayText("W", percUnitW*22, percUnitH*68, 'l');
-    displayText("walk forward", percUnitW*23, percUnitH*68, 'm');
+    unsigned char* instrTex;
+    instrTex = SOIL_load_image("uiO-instruct.PNG", &iTW, &iTH, 0, SOIL_LOAD_RGBA);
+
+    //draw image
+    glPixelZoom(1, -1);
+    glRasterPos2s(percUnitW*22, percUnitH*75);
+    glDrawPixels(iTW,iTH,GL_RGBA,GL_UNSIGNED_BYTE, instrTex);
+    glPixelZoom(1,1);
+
 
     //check box for tracking firework
     uiO.trackBL[0] = percUnitW*22;
@@ -46,6 +53,44 @@ void displayUIOptions()
     if(gState.trackFW){
         drawCheck(uiO.trackBL[0],uiO.trackBL[1]);
     }
+
+
+    //resume button
+    uiO.resumeBL[0] = percUnitW*70;
+    uiO.resumeBL[1] = percUnitH*31;
+    uiO.resumeTR[0] = percUnitW*79;
+    uiO.resumeTR[1] = percUnitH*39;
+    glColor3f(0, 0.5, 0);
+    glBegin(GL_QUADS);
+        glVertex2sv(uiO.resumeBL);
+        glVertex2s(uiO.resumeTR[0], uiO.resumeBL[1]);
+        glVertex2sv(uiO.resumeTR);
+        glVertex2s(uiO.resumeBL[0], uiO.resumeTR[1]);
+    glEnd();
+    displayText("Resume", uiO.resumeBL[0]+5, uiO.resumeBL[1]+5,'l');
+
+
+    //Quit button
+    uiO.quitBL[0] = percUnitW*70;
+    uiO.quitBL[1] = percUnitH*22;
+    uiO.quitTR[0] = percUnitW*79;
+    uiO.quitTR[1] = percUnitH*30;
+    glColor3f(0.6, 0, 0);
+    glBegin(GL_QUADS);
+        glVertex2sv(uiO.quitBL);
+        glVertex2s(uiO.quitTR[0], uiO.quitBL[1]);
+        glVertex2sv(uiO.quitTR);
+        glVertex2s(uiO.quitBL[0], uiO.quitTR[1]);
+    glEnd();
+    displayText("Quit", uiO.quitBL[0]+5, uiO.quitBL[1]+5,'l');
+    //underline Q
+    glLineWidth(2);
+    glBegin(GL_LINES);
+        glVertex2s(uiO.quitBL[0]+6,uiO.quitBL[1]+3);
+        glVertex2s(uiO.quitBL[0]+18,uiO.quitBL[1]+3);
+    glEnd();
+    glLineWidth(1);
+
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix(); // returning to 3D
@@ -82,6 +127,16 @@ void mouseUIOptions(int button, int state, int x, int y)
             else{
                 gState.trackFW = true;
             }
+        }
+
+        //resume
+        else if(x > uiO.resumeBL[0] && x < uiO.resumeTR[0] && y > uiO.resumeBL[1] && y < uiO.resumeTR[1]){
+            gState.uiOptions = false;
+        }
+
+        //quit
+        else if(x > uiO.quitBL[0] && x < uiO.quitTR[0] && y > uiO.quitBL[1] && y < uiO.quitTR[1]){
+            gState.uiQuit = true;
         }
     }
 }
