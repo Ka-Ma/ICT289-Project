@@ -47,7 +47,8 @@
 	<GL/freeglut.h>
 	"math.h"
 
-1463883092 c:\users\kat\documents\projects\ict289grpproj\ict289-project\math.h
+1464668955 c:\users\kat\documents\projects\ict289grpproj\ict289-project\math.h
+	<stdbool.h>
 
 1463102696 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\state.c
 	"state.h"
@@ -61,7 +62,7 @@
 1463898436 c:\users\kat\documents\projects\ict289grpproj\ict289-project\disptext.h
 	<GL/freeglut.h>
 
-1463883092 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\main.c
+1464668955 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\main.c
 	<stdio.h>
 	<stdlib.h>
 	<GL/freeglut.h>
@@ -120,7 +121,7 @@
 1464667626 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uioptions.c
 	"uiOptions.h"
 
-1464668319 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.c
+1464668487 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\uiquit.c
 	"uiQuit.h"
 
 1463919377 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\globalstate.c
@@ -227,11 +228,11 @@
 	<stdbool.h>
 	"math.h"
 
-1463883092 c:\users\kat\documents\projects\ict289grpproj\ict289-project\aabbcol.h
+1464668955 c:\users\kat\documents\projects\ict289grpproj\ict289-project\aabbcol.h
 	<stdbool.h>
 	"math.h"
 
-1463883092 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\aabbcol.c
+1464668955 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\aabbcol.c
 	"AABBCol.h"
 
 1464008945 c:\users\kat\documents\projects\ict289grpproj\ict289-project\soil.h
