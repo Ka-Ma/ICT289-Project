@@ -62,9 +62,10 @@
 1463898436 c:\users\kat\documents\projects\ict289grpproj\ict289-project\disptext.h
 	<GL/freeglut.h>
 
-1464668955 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\main.c
+1464837222 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\main.c
 	<stdio.h>
 	<stdlib.h>
+	<math.h>
 	<GL/freeglut.h>
 	<fcntl.h>
 	<unistd.h>
