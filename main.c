@@ -30,8 +30,8 @@
 #define THETA 75 //Launch angle for tubes not middle, middle tube is 0 degrees (directly upwards)
 
 int fwNum = 0;
-int cont[] ={0};
 int startTime;
+float maxS =0;
 
 int wRes = 1600; int hRes = 1000;
 // Angle of rotation for camera direction
@@ -91,69 +91,82 @@ void drawModels()
     glPopMatrix();
 }
 
-void animateFW(int * val) //val[0] = number of fireworks; val[1] = tube number;
+void animateFW(int val)
 {
-    if(cont[val[0]]!=0)
+
+    int currTime = glutGet(GLUT_ELAPSED_TIME);
+    int elapsedTime = currTime - startTime;
+
+    if(elapsedTime<gState.fuseCh)
     {
-        int currTime = glutGet(GLUT_ELAPSED_TIME);
-        int elapsedTime = currTime - startTime;
+        double s, r, x1, z1; //vertical displacement and horizontal displacement
 
-        if(elapsedTime<gState.fuseCh)
+        //Calc the y coord (vertical displacement)
+        s = pow((((gState.velocityCh*2.5) * (elapsedTime/1000)) + (0.5*GRAV*(elapsedTime/1000))),2.0);
+        if(s>maxS)
         {
-            double s, r, x, z; //vertical displacement and horizontal displacement
-
-            //Calc the y coord (vertical displacement)
-            s = pow(((gState.velocityCh * (elapsedTime/1000)) + (0.5*GRAV*(elapsedTime/1000))),2.0);
-
-            if(val[1]!=4) //4, as 5-1 (due to first being 0)
-            {
-                //Calc the horizontal displacement assuming terminal velocity is infinite
-                r = gState.velocityCh * Math.cos(THETA) * (elapsedTime/1000);
-
-                //switch case for angle calcs
-                switch(val[1])
-                {
-                    case 0:
-                        x = -1.0 * r * cos(corners);
-                        z = r * sin(corners);
-                        break;
-                    case 1:
-                        x = 0;
-                        z = r;
-                        break;
-                    case 2:
-                        x = r * cos(corners);
-                        z = r * sin(corners);
-                        break;
-                    case 3:
-                        x = -r;
-                        z = 0;
-                        break;
-                    case 5:
-                        x = r;
-                        z = 0;
-                        break;
-                    case 6:
-                        x = -r * cos(corners);
-                        z = -r * sin(corners);
-                        break;
-                    case 7:
-                        x = 0;
-                        z = -r;
-                        break;
-                    case 8:
-                        x = r * cos(corners);
-                        z = -r * cos(corners);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            //generate firework at {x,s,z}
-
-            glutTimerFunc(TIMERSECS, animateFW, val);
+            maxS = s;
         }
+
+        if(val!=5) //4, as 5-1 (due to first being 0)
+        {
+            //Calc the horizontal displacement assuming terminal velocity is infinite
+            r = (gState.velocityCh*2.5) * cos(THETA*M_PI/180.0) * (elapsedTime/1000);
+
+            //switch case for angle calcs
+            switch(val)
+            {
+                case 1:
+                    x1 = -1.0 * r * cos(corners);
+                    z1 = r * sin(corners);
+                    break;
+                case 2:
+                    x1 = 0;
+                    z1 = r;
+                    break;
+                case 3:
+                    x1 = r * cos(corners);
+                    z1 = r * sin(corners);
+                    break;
+                case 4:
+                    x1 = -r;
+                    z1 = 0;
+                    break;
+                case 6:
+                    x1 = r;
+                    z1 = 0;
+                    break;
+                case 7:
+                    x1 = -r * cos(corners);
+                    z1 = -r * sin(corners);
+                    break;
+                case 8:
+                    x1 = 0;
+                    z1 = -r;
+                    break;
+                case 9:
+                    x1 = r * cos(corners);
+                    z1 = -r * cos(corners);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if(gState.trackFW)
+        {
+            gluLookAt(x, 5.0f, z,
+                x1 , maxS, z1,
+              0.0f, 0.0f, 1.0f);
+        }
+
+        //generate firework at {x,s,z}
+
+        glutTimerFunc(TIMERSECS, animateFW, val);
+    }
+    else{
+        //call fw detonation func
+        maxS = 0;
     }
 }
 
@@ -358,7 +371,7 @@ void SetAABBs()
     for(i=-100.0f;i<=100.0f;i=i+0.1)
     {
         float xMin = (i*cos(corners)),zMin = (-i*sin(corners));
-        if((i<(pierLeft))||(i>pierRight))
+        if((i<(pierLeft))&&(i>pierRight))
         {
             AddToStatic(xMin,(xMin+0.1),0.0,10,zMin,(zMin+0.1)); //Creates 10unit high 0.1x0.1 blocks to impede movement
         }
