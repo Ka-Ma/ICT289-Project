@@ -377,31 +377,31 @@ void SetAABBs()
         }
     }
 
-    //Pier collisions
-    float pierLeftz = (-2.5*sin(corners));
-    for(i=0.0f;i<=10.0f;i=i+0.1)
-    {
-        float xMax = (pierLeft+(i*cos(corners))), zMax = (pierLeftz+(i*sin(corners)));
-        AddToStatic(xMax-0.1,xMax,0.0,10.0,zMax-0.1,zMax); //Creates 10unit high 0.1x0.1 blocks to impede movement
-    }
-    float pierRightz = -pierLeftz;
-    for(i=0.0f;i<=10.0f;i=i+0.1)
-    {
-        float xMin = (pierRight+(i*cos(corners))), zMin = (pierRightz+(i*sin(corners)));
-        AddToStatic(xMin, xMin+0.1,0.0,10.0,zMin,zMin+0.1); //Creates 10unit high 0.1x0.1 blocks to impede movement
-    }
-    //Collisions for end of pier; Includes FW box
-    int itvl = 50, j;
-    float pierLeftx = (pierLeft+(7.5*cos(corners))), pierRightx = (pierRight+(10*cos(corners)));
-    float interv = (pierRightx-pierLeftx)/(float)itvl;
-    float pierRightz2 = (pierRightz+(7.5*sin(corners))), pierLeftz2 = (pierLeftz+(10*sin(corners)));
-    float intervz = (pierRightz2-pierLeftz2)/(float)itvl;
-
-    for(j=0;j<=50;j++)
-    {
-        float xx = pierLeftx+interv, zz=pierLeftz2+intervz;
-        AddToStatic(xx,xx+0.1,0.0,10.0,zz,zz+0.1); //Creates 10unit high 0.1x0.1 blocks to impede movement
-    }
+//    //Pier collisions
+//    float pierLeftz = (-2.5*sin(corners));
+//    for(i=0.0f;i<=10.0f;i=i+0.1)
+//    {
+//        float xMax = (pierLeft+(i*cos(corners))), zMax = (pierLeftz+(i*sin(corners)));
+//        AddToStatic(xMax-0.1,xMax,0.0,10.0,zMax-0.1,zMax); //Creates 10unit high 0.1x0.1 blocks to impede movement
+//    }
+//    float pierRightz = -pierLeftz;
+//    for(i=0.0f;i<=10.0f;i=i+0.1)
+//    {
+//        float xMin = (pierRight+(i*cos(corners))), zMin = (pierRightz+(i*sin(corners)));
+//        AddToStatic(xMin, xMin+0.1,0.0,10.0,zMin,zMin+0.1); //Creates 10unit high 0.1x0.1 blocks to impede movement
+//    }
+//    //Collisions for end of pier; Includes FW box
+//    int itvl = 50, j;
+//    float pierLeftx = (pierLeft+(7.5*cos(corners))), pierRightx = (pierRight+(10*cos(corners)));
+//    float interv = (pierRightx-pierLeftx)/(float)itvl;
+//    float pierRightz2 = (pierRightz+(7.5*sin(corners))), pierLeftz2 = (pierLeftz+(10*sin(corners)));
+//    float intervz = (pierRightz2-pierLeftz2)/(float)itvl;
+//
+//    for(j=0;j<=50;j++)
+//    {
+//        float xx = pierLeftx+interv, zz=pierLeftz2+intervz;
+//        AddToStatic(xx,xx+0.1,0.0,10.0,zz,zz+0.1); //Creates 10unit high 0.1x0.1 blocks to impede movement
+//    }
 
 }
 
@@ -475,6 +475,7 @@ void renderScene(void)
         glVertex3f(-100.0f,2.5f,-100.0f);
     glEnd();
     //Pier
+    glColor3f(0.25f,0.25f,0.25f);
     float z1 = (2.5*sin(corners)),x2 = (2.5*cos(corners)),z2=-z1,x1=-x2; //first set of pier coords
     float z3 = (z2+(10*cos(corners))), x3 = (x2+(10*sin(corners))), z4 = (z1+(10*cos(corners))), x4=(x1+(10*sin(corners))); //second set of pier coords
     glBegin(GL_POLYGON); //Pier top
@@ -503,6 +504,7 @@ void renderScene(void)
         glVertex3f(x2,-0.05f,z2);
     glEnd();
     //fireworks box
+    glColor3f(0.0f,0.0f,0.0f);
     float c1 = (x4+(1.25*sin(corners))), c2 = (c1-(2.5*sin(corners))), c3 = (c2+(2.5*cos(corners))), c4 = (c3+(2.5*cos(corners)));
     float cz1 = (z4-(1.25*cos(corners))), cz2 = (cz1-(2.5*cos(corners))), cz3 = (cz2-(2.5*sin(corners))), cz4 = (cz3+(2.5*sin(corners)));
     glBegin(GL_POLYGON); //Box Top
