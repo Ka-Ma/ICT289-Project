@@ -13,10 +13,12 @@
 #include "uiOptions.h"
 #include "uiQuit.h"
 #include "AABBCol.h"
+//#include "particles.h"
 
 #define ESCAPE          27
 #define MAX_FILE_NAME   20
 #define MODEL_ONE       0
+#define FIREWORK        1
 
 //Player dimensions
 #define PLAYER_X    2
@@ -46,6 +48,21 @@ bool filesUnRead = true;
 
 bool collisionsAdded = false;
 bool isColliding = false;
+
+void createFirework()
+{
+    GLUquadricObj *quadObj;
+
+    glNewList(FIREWORK, GL_COMPILE);
+    quadObj = gluNewQuadric();
+    gluQuadricDrawStyle(quadObj, GLU_FILL);
+    gluQuadricNormals(quadObj, GLU_SMOOTH);
+    gluCylinder(quadObj, 0.6, 0.6, 2.4, 24, 4);
+    gluDisk(quadObj, 0, 0.6, 24, 5);
+    glTranslatef(0, 0, 3);
+    gluSphere(quadObj, 0.9, 24, 24);
+    glEndList();
+}
 
 void readModels()
 {
@@ -348,6 +365,13 @@ void renderScene(void)
         glPopMatrix();
     }
 
+    glPushMatrix();
+    //glScalef(5, 5, 5);
+    glRotatef(270, 1.0, 0, 0);
+    glTranslatef(0, 2, 0);
+    glCallList(FIREWORK);
+    glPopMatrix();
+
     // readModels();      Commented out as we don't want bones either KM
 
     // drawModels();      Commented out as we don't want bones either KM
@@ -364,6 +388,7 @@ void renderScene(void)
         glutPostRedisplay();
     }
 
+    //DrawParticles();
 
     glMatrixMode(GL_PROJECTION);
 
@@ -374,6 +399,9 @@ void renderScene(void)
     glPushMatrix();
     glLoadIdentity();
     rasterInt(fps, 50, 50, 200, 0, 0);
+    rasterInt(x_loc, 150, 50, 0, 100, 0);
+    rasterInt(y_loc, 200, 50, 0, 100, 0);
+    rasterInt(z_loc, 250, 50, 0, 100, 0);
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
@@ -393,10 +421,19 @@ void renderScene(void)
 void myInit()
 {
 
+    /*if (!LoadGLTextures())
+    {
+        printf("Textures not loaded");
+    }
+
+    InitParticles();*/
+
+    createFirework();
+
     // Register callbacks
     glutDisplayFunc(renderScene);
     glutReshapeFunc(changeSize);
-    //glutIdleFunc(renderScene);
+    glutIdleFunc(renderScene);
     glutKeyboardFunc(keyPress);
     glutKeyboardUpFunc(keyUp);
     glutSpecialFunc(specialKeyPress);
