@@ -56,6 +56,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="objloader.h" />
+		<Unit filename="particles.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="particles.h" />
 		<Unit filename="stb_image_aug.o" />
 		<Unit filename="uiControls.c">
 			<Option compilerVar="CC" />
