@@ -174,7 +174,7 @@ void animateFW(int val)
 
         if(gState.trackFW)
         {
-            gluLookAt(x, 5.0f, z,
+            gluLookAt(x_loc, 5.0f, z_loc,
                 x1 , maxS, z1,
               0.0f, 0.0f, 1.0f);
         }
