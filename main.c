@@ -13,10 +13,12 @@
 #include "uiOptions.h"
 #include "uiQuit.h"
 #include "AABBCol.h"
+//#include "particles.h"
 
 #define ESCAPE          27
 #define MAX_FILE_NAME   20
 #define MODEL_ONE       0
+#define FIREWORK        1
 
 //Player dimensions
 #define PLAYER_X    2
@@ -39,7 +41,9 @@ float angle = 0.0f;
 // Actual vector representing the camera's direction
 float lx = 0.0f, lz = -1.0f;
 // XZ position of the camera
-float x = -5.0f, z = 0.0f;
+
+float x_loc = -5.0f, y_loc = 5.0f, z_loc = 0.0f;
+
 // Key states. Will be 0 when no keys are being pressed
 float deltaAngle = 0.0f;
 float deltaMove = 0;
@@ -59,6 +63,21 @@ bool isColliding = false;
 
 //For Collision corners (pier)
 double corners = 45*M_PI/180.0;
+
+void createFirework()
+{
+    GLUquadricObj *quadObj;
+
+    glNewList(FIREWORK, GL_COMPILE);
+    quadObj = gluNewQuadric();
+    gluQuadricDrawStyle(quadObj, GLU_FILL);
+    gluQuadricNormals(quadObj, GLU_SMOOTH);
+    gluCylinder(quadObj, 0.6, 0.6, 2.4, 24, 4);
+    gluDisk(quadObj, 0, 0.6, 24, 5);
+    glTranslatef(0, 0, 3);
+    gluSphere(quadObj, 0.9, 24, 24);
+    glEndList();
+}
 
 void readModels()
 {
@@ -272,19 +291,19 @@ void computeDir(float deltaAngle)
 
 void computePos(float deltaMove)
 {
-    SetLastLocation(x, 5.0f, z, player_col);     //Store player's last location for collision resolution
+    SetLastLocation(x_loc, y_loc, z_loc, player_col);     //Store player's last location for collision resolution
 
-    x += deltaMove * lx * 0.1f;
-    z += deltaMove * lz * 0.1f;
+    x_loc += deltaMove * lx * 0.1f;
+    z_loc += deltaMove * lz * 0.1f;
 
-    UpdateDynamic(x - PLAYER_X, x + PLAYER_X, 5.0f - PLAYER_Y, 5.0f + PLAYER_Y, z - PLAYER_Z, z + PLAYER_Z, player_col);      //Add modified player Xmin, Xmax, Ymin, Ymax, Zmin, Zmax to dynamic AABB array
+    UpdateDynamic(x_loc - PLAYER_X, x_loc + PLAYER_X, y_loc - PLAYER_Y, y_loc + PLAYER_Y, z_loc - PLAYER_Z, z_loc + PLAYER_Z, player_col);      //Add modified player Xmin, Xmax, Ymin, Ymax, Zmin, Zmax to dynamic AABB array
     isColliding = CheckCollisions(player_col);       //Check player (0) collisions
 
     if (isColliding)
     {
-        x = ReturnXLoc(player_col);      //Return saved x location
-        //y = ReturnYLoc(player_col);      //Return saved y location
-        z = ReturnZLoc(player_col);      //Return saved z location
+        x_loc = ReturnXLoc(player_col);      //Return saved x location
+        y_loc = ReturnYLoc(player_col);      //Return saved y location
+        z_loc = ReturnZLoc(player_col);      //Return saved z location
         isColliding = false;
     }
 }
@@ -355,7 +374,7 @@ void SetAABBs()
 {
     //Dynamic AABBs
     //Player
-    player_col = AddToDynamic(x - PLAYER_X, x + PLAYER_X, 5.0f - PLAYER_Y, 5.0f + PLAYER_Y, z - PLAYER_Z, z + PLAYER_Z);
+    player_col = AddToDynamic(x_loc - PLAYER_X, x_loc + PLAYER_X, y_loc - PLAYER_Y, y_loc + PLAYER_Y, z_loc - PLAYER_Z, z_loc + PLAYER_Z);
 
     //Static AABBs
     //Red test box
@@ -429,8 +448,8 @@ void renderScene(void)
 
     glLoadIdentity();
 
-    gluLookAt(x, 5.0f, z,
-              x + lx, 5.0f, z + lz,
+    gluLookAt(x_loc, y_loc, z_loc,
+              x_loc + lx, 5.0f, z_loc + lz,
               0.0f, 1.0f, 0.0f);
 
     glColor3f(0.0f, 0.21f, 0.0f);
@@ -579,6 +598,13 @@ void renderScene(void)
         glPopMatrix();
     }
 
+    glPushMatrix();
+    //glScalef(5, 5, 5);
+    glRotatef(270, 1.0, 0, 0);
+    glTranslatef(0, 2, 0);
+    glCallList(FIREWORK);
+    glPopMatrix();
+
     // readModels();      Commented out as we don't want bones either KM
 
     // drawModels();      Commented out as we don't want bones either KM
@@ -591,9 +617,11 @@ void renderScene(void)
         fps = frame*1000.0/(time-timebase);
         timebase = time;
         frame = 0;
+        //y -= 1;
         glutPostRedisplay();
     }
 
+    //DrawParticles();
 
     glMatrixMode(GL_PROJECTION);
 
@@ -604,6 +632,9 @@ void renderScene(void)
     glPushMatrix();
     glLoadIdentity();
     rasterInt(fps, 50, 50, 200, 0, 0);
+    rasterInt(x_loc, 150, 50, 0, 100, 0);
+    rasterInt(y_loc, 200, 50, 0, 100, 0);
+    rasterInt(z_loc, 250, 50, 0, 100, 0);
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
@@ -622,6 +653,16 @@ void renderScene(void)
 
 void myInit()
 {
+
+    /*if (!LoadGLTextures())
+    {
+        printf("Textures not loaded");
+    }
+
+    InitParticles();*/
+
+    createFirework();
+
     //set Sky colour
     //glClearColor(0.32f, 0.21f, 0.53f, 0.0f); pansy
     glClearColor(0.21f, 0.11f, 0.43, 0.0f);
