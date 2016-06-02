@@ -36,6 +36,8 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="AABBCol.h" />
+		<Unit filename="SOIL.h" />
+		<Unit filename="SOIL.o" />
 		<Unit filename="dispText.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -44,6 +46,8 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="globalState.h" />
+		<Unit filename="image_DXT.o" />
+		<Unit filename="image_helper.o" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -56,6 +60,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="particles.h" />
+		<Unit filename="stb_image_aug.o" />
 		<Unit filename="uiControls.c">
 			<Option compilerVar="CC" />
 		</Unit>

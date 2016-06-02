@@ -10,6 +10,7 @@
 
 #include "dispText.h"
 #include "globalState.h"
+#include "soil.h"
 
 void displayUIQuit();
 void keysUIQuit(unsigned char key, int x, int y);

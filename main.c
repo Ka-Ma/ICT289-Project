@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <GL/freeglut.h>
 #include <fcntl.h>
 #include <unistd.h>
-
 
 #include "objloader.h"
 #include "globalState.h" // global variables for fireworks settings and UI display states KM
@@ -25,13 +25,25 @@
 #define PLAYER_Y    5
 #define PLAYER_Z    2
 
+#define M_PI 3.14159265358979323846 //dunno why, but math.h's M_PI wasn't working...
+//Fireworks/Realtime stuff
+#define TIMERSECS 33
+#define GRAV -24.5 //gravity
+#define THETA 75 //Launch angle for tubes not middle, middle tube is 0 degrees (directly upwards)
+
+int fwNum = 0;
+int startTime;
+float maxS =0;
+
 int wRes = 1600; int hRes = 1000;
 // Angle of rotation for camera direction
 float angle = 0.0f;
 // Actual vector representing the camera's direction
 float lx = 0.0f, lz = -1.0f;
 // XZ position of the camera
-float x_loc = 0.0f, y_loc = 5.0f, z_loc = 5.0f;
+
+float x_loc = -5.0f, y_loc = 5.0f, z_loc = 0.0f;
+
 // Key states. Will be 0 when no keys are being pressed
 float deltaAngle = 0.0f;
 float deltaMove = 0;
@@ -48,6 +60,9 @@ bool filesUnRead = true;
 
 bool collisionsAdded = false;
 bool isColliding = false;
+
+//For Collision corners (pier)
+double corners = 45*M_PI/180.0;
 
 void createFirework()
 {
@@ -93,6 +108,85 @@ void drawModels()
     drawModelFile(MODEL_ONE);
 
     glPopMatrix();
+}
+
+void animateFW(int val)
+{
+
+    int currTime = glutGet(GLUT_ELAPSED_TIME);
+    int elapsedTime = currTime - startTime;
+
+    if(elapsedTime<gState.fuseCh)
+    {
+        double s, r, x1, z1; //vertical displacement and horizontal displacement
+
+        //Calc the y coord (vertical displacement)
+        s = pow((((gState.velocityCh*2.5) * (elapsedTime/1000)) + (0.5*GRAV*(elapsedTime/1000))),2.0);
+        if(s>maxS)
+        {
+            maxS = s;
+        }
+
+        if(val!=5) //4, as 5-1 (due to first being 0)
+        {
+            //Calc the horizontal displacement assuming terminal velocity is infinite
+            r = (gState.velocityCh*2.5) * cos(THETA*M_PI/180.0) * (elapsedTime/1000);
+
+            //switch case for angle calcs
+            switch(val)
+            {
+                case 1:
+                    x1 = -1.0 * r * cos(corners);
+                    z1 = r * sin(corners);
+                    break;
+                case 2:
+                    x1 = 0;
+                    z1 = r;
+                    break;
+                case 3:
+                    x1 = r * cos(corners);
+                    z1 = r * sin(corners);
+                    break;
+                case 4:
+                    x1 = -r;
+                    z1 = 0;
+                    break;
+                case 6:
+                    x1 = r;
+                    z1 = 0;
+                    break;
+                case 7:
+                    x1 = -r * cos(corners);
+                    z1 = -r * sin(corners);
+                    break;
+                case 8:
+                    x1 = 0;
+                    z1 = -r;
+                    break;
+                case 9:
+                    x1 = r * cos(corners);
+                    z1 = -r * cos(corners);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if(gState.trackFW)
+        {
+            gluLookAt(x, 5.0f, z,
+                x1 , maxS, z1,
+              0.0f, 0.0f, 1.0f);
+        }
+
+        //generate firework at {x,s,z}
+
+        glutTimerFunc(TIMERSECS, animateFW, val);
+    }
+    else{
+        //call fw detonation func
+        maxS = 0;
+    }
 }
 
 void rasterChar (const char* dWords, int xPos, int yPos, int r, int g, int b)
@@ -216,8 +310,6 @@ void computePos(float deltaMove)
 
 void specialKeyPress(int key, int x, int y)
 {
-    float fraction = 0.1f;
-
     switch (key)
     {
     case GLUT_KEY_LEFT: deltaAngle = -0.01f; break;
@@ -286,7 +378,50 @@ void SetAABBs()
 
     //Static AABBs
     //Red test box
-    AddToStatic(45.0, 55.0, 0.0, 20.0, 50.0, 70.0); //Add Object Xmin, Xmax, Ymin, Ymax, Zmin, Zmax for AABB collisions
+    //AddToStatic(45.0, 55.0, 0.0, 20.0, 50.0, 70.0); //Add Object Xmin, Xmax, Ymin, Ymax, Zmin, Zmax for AABB collisions
+    AddToStatic(-100.0,100.0,0.0,10,-110.0,-100.0); //Collision stuff for Back fence
+    AddToStatic(-100.0,100.0,0.0,10,100.0,110.0); //Collision stuff for Front fence
+    AddToStatic(-110.0,-100.0,0.0,10,-100.0,100.0); //Collision stuff for left fence
+    AddToStatic(100.0,110.0,0.0,10,-100.0,100.0); //Collision stuff for right fence
+
+    //Collisions with water edge not including pier? don't know if it has to be so complex
+    float pierLeft = (-2.5*cos(corners)), pierRight = -pierLeft;
+    float i;
+    for(i=-100.0f;i<=100.0f;i=i+0.1)
+    {
+        float xMin = (i*cos(corners)),zMin = (-i*sin(corners));
+        if((i<(pierLeft))&&(i>pierRight))
+        {
+            AddToStatic(xMin,(xMin+0.1),0.0,10,zMin,(zMin+0.1)); //Creates 10unit high 0.1x0.1 blocks to impede movement
+        }
+    }
+
+//    //Pier collisions
+//    float pierLeftz = (-2.5*sin(corners));
+//    for(i=0.0f;i<=10.0f;i=i+0.1)
+//    {
+//        float xMax = (pierLeft+(i*cos(corners))), zMax = (pierLeftz+(i*sin(corners)));
+//        AddToStatic(xMax-0.1,xMax,0.0,10.0,zMax-0.1,zMax); //Creates 10unit high 0.1x0.1 blocks to impede movement
+//    }
+//    float pierRightz = -pierLeftz;
+//    for(i=0.0f;i<=10.0f;i=i+0.1)
+//    {
+//        float xMin = (pierRight+(i*cos(corners))), zMin = (pierRightz+(i*sin(corners)));
+//        AddToStatic(xMin, xMin+0.1,0.0,10.0,zMin,zMin+0.1); //Creates 10unit high 0.1x0.1 blocks to impede movement
+//    }
+//    //Collisions for end of pier; Includes FW box
+//    int itvl = 50, j;
+//    float pierLeftx = (pierLeft+(7.5*cos(corners))), pierRightx = (pierRight+(10*cos(corners)));
+//    float interv = (pierRightx-pierLeftx)/(float)itvl;
+//    float pierRightz2 = (pierRightz+(7.5*sin(corners))), pierLeftz2 = (pierLeftz+(10*sin(corners)));
+//    float intervz = (pierRightz2-pierLeftz2)/(float)itvl;
+//
+//    for(j=0;j<=50;j++)
+//    {
+//        float xx = pierLeftx+interv, zz=pierLeftz2+intervz;
+//        AddToStatic(xx,xx+0.1,0.0,10.0,zz,zz+0.1); //Creates 10unit high 0.1x0.1 blocks to impede movement
+//    }
+
 }
 
 void renderScene(void)
@@ -317,14 +452,112 @@ void renderScene(void)
               x_loc + lx, 5.0f, z_loc + lz,
               0.0f, 1.0f, 0.0f);
 
-    glColor3f(0.0f, 0.5f, 0.0f);
+    glColor3f(0.0f, 0.21f, 0.0f);
+    //grass floor
+    glBegin(GL_POLYGON);
+        glVertex3f(-1000.0f, 0.0f, -1000.0f);
+        glVertex3f(1000.0f, 0.0f, -1000.0f);
+        glVertex3f(-1000.0f, 0.0f, 1000.0f);
+        //glVertex3f(100.0f, 0.0f, 100.0f);
+    glEnd();
+    //water floor
+    glColor3f(0.21f, 0.11f, 0.5f);
+    glBegin(GL_POLYGON);
+        glVertex3f(-1000.0f, -0.05f, 1000.0f);
+        glVertex3f(1000.0f, -0.05f, 1000.0f);
+        glVertex3f(1000.0f, -0.05f, -1000.0f);
+    glEnd();
+    //fence bits
+    glColor3f(0.32f, 0.18f, 0.14f);
     glBegin(GL_QUADS);
-        glVertex3f(-100.0f, 0.0f, -100.0f);
-        glVertex3f(-100.0f, 0.0f, 100.0f);
-        glVertex3f(100.0f, 0.0f, 100.0f);
-        glVertex3f(100.0f, 0.0f, -100.0f);
+        glVertex3f(-100.0f,0.0f,-100.0f);
+        glVertex3f(-100.0f,0.0f,100.0f);
+        glVertex3f(-100.0f,2.5f,100.0f);
+        glVertex3f(-100.0f,2.5f,-100.0f);
+    glEnd();
+    glBegin(GL_QUADS);
+        glVertex3f(-100.0f,0.0f,100.0f);
+        glVertex3f(100.0f,0.0f,100.0f);
+        glVertex3f(100.0f,2.5f,100.0f);
+        glVertex3f(-100.0f,2.5f,100.0f);
+    glEnd();
+    glBegin(GL_QUADS);
+        glVertex3f(100.0f,0.0f,100.0f);
+        glVertex3f(100.0f,0.0f,-100.0f);
+        glVertex3f(100.0f,2.5f,-100.0f);
+        glVertex3f(100.0f,2.5f,100.0f);
+    glEnd();
+    glBegin(GL_QUADS);
+        glVertex3f(-100.0f,0.0f,-100.0f);
+        glVertex3f(100.0f,0.0f,-100.0f);
+        glVertex3f(100.0f,2.5f,-100.0f);
+        glVertex3f(-100.0f,2.5f,-100.0f);
+    glEnd();
+    //Pier
+    glColor3f(0.25f,0.25f,0.25f);
+    float z1 = (2.5*sin(corners)),x2 = (2.5*cos(corners)),z2=-z1,x1=-x2; //first set of pier coords
+    float z3 = (z2+(10*cos(corners))), x3 = (x2+(10*sin(corners))), z4 = (z1+(10*cos(corners))), x4=(x1+(10*sin(corners))); //second set of pier coords
+    glBegin(GL_POLYGON); //Pier top
+        glVertex3f(x1,0.0f,z1);
+        glVertex3f(x2,0.0f,z2);
+        glVertex3f(x3,0.0f,z4);
+        glVertex3f(x4,0.0f,z4);
+    glEnd();
+    //pier sides
+    glBegin(GL_POLYGON);
+        glVertex3f(x1,-0.05f,z1);
+        glVertex3f(x1,0.0f,z1);
+        glVertex3f(x4,0.0f,z4);
+        glVertex3f(x4,-0.05f,z4);
+    glEnd();
+    glBegin(GL_POLYGON);
+        glVertex3f(x4,-0.05f,z4);
+        glVertex3f(x4,0.0f,z4);
+        glVertex3f(x3,0.0f,z3);
+        glVertex3f(x3,-0.05f,z3);
+    glEnd();
+    glBegin(GL_POLYGON);
+        glVertex3f(x3,-0.05f,z3);
+        glVertex3f(x3,0.0f,z3);
+        glVertex3f(x2,0.0f,z2);
+        glVertex3f(x2,-0.05f,z2);
+    glEnd();
+    //fireworks box
+    glColor3f(0.0f,0.0f,0.0f);
+    float c1 = (x4+(1.25*sin(corners))), c2 = (c1-(2.5*sin(corners))), c3 = (c2+(2.5*cos(corners))), c4 = (c3+(2.5*cos(corners)));
+    float cz1 = (z4-(1.25*cos(corners))), cz2 = (cz1-(2.5*cos(corners))), cz3 = (cz2-(2.5*sin(corners))), cz4 = (cz3+(2.5*sin(corners)));
+    glBegin(GL_POLYGON); //Box Top
+        glVertex3f(c1,2.5,cz1);
+        glVertex3f(c2,2.5,cz2);
+        glVertex3f(c3,2.5,cz3);
+        glVertex3f(c4,2.5,cz4);
+    glEnd();
+    glBegin(GL_POLYGON); //Box Left
+        glVertex3f(c1,2.5,cz1);
+        glVertex3f(c1,0.0,cz1);
+        glVertex3f(c2,0.0,cz2);
+        glVertex3f(c2,2.5,cz2);
+    glEnd();
+    glBegin(GL_POLYGON); //Box Front
+        glVertex3f(c2,2.5,cz2);
+        glVertex3f(c2,0.0,cz2);
+        glVertex3f(c3,0.0,cz3);
+        glVertex3f(c3,2.5,cz3);
+    glEnd();
+    glBegin(GL_POLYGON); //Box Right
+        glVertex3f(c3,2.5,cz3);
+        glVertex3f(c3,0.0,cz3);
+        glVertex3f(c4,0.0,cz4);
+        glVertex3f(c4,2.5,cz4);
+    glEnd();
+    glBegin(GL_POLYGON); //Box Back
+        glVertex3f(c4,2.5,cz4);
+        glVertex3f(c4,0.0,cz4);
+        glVertex3f(c1,0.0,cz1);
+        glVertex3f(c1,2.5,cz1);
     glEnd();
 
+    /*
         //Red test box for collisions -- Leave as example for now
         glColor3f(0.5f, 0.0f, 0.0f);
         glBegin(GL_QUADS);
@@ -351,7 +584,7 @@ void renderScene(void)
             glVertex3f(45.0f, 20.0f, 70.0f);
             glVertex3f(45.0f, 20.0f, 50.0f);
         glEnd();
-
+*/
     for(int i = -3; i < 3; i++)
         for(int j = -3; j < 3; j++)
     {
@@ -430,6 +663,9 @@ void myInit()
 
     createFirework();
 
+    //set Sky colour
+    //glClearColor(0.32f, 0.21f, 0.53f, 0.0f); pansy
+    glClearColor(0.21f, 0.11f, 0.43, 0.0f);
     // Register callbacks
     glutDisplayFunc(renderScene);
     glutReshapeFunc(changeSize);

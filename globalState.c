@@ -16,7 +16,8 @@ struct globalState gState = {
     .velocityCh = 8.6,
     .fuseMin = 500,
     .fuseMax = 2000,
-    .fuseCh = 900
+    .fuseCh = 900,
+    .trackFW = false
 };
 
 struct globalState tmpState; // for the settings UI before accepting changes

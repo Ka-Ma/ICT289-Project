@@ -27,6 +27,7 @@ typedef struct globalState{
     float fuseMin; // milliseconds
     float fuseMax; // milliseconds
     float fuseCh; // milliseconds
+    bool trackFW; // automatically track firework visually when launched or not
 }globalState;
 
 extern struct globalState gState;
