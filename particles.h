@@ -5,9 +5,7 @@
 #include <GL/glaux.h>
 #include <stdbool.h>
 
-#define MAX_PARTICLES 1000
-
-
+#define MAX_PARTICLES 200
 
 typedef struct particles
 {
@@ -30,16 +28,15 @@ typedef struct particles
 
 particles particle[MAX_PARTICLES];
 
-static GLfloat colours[12][3] =
-{
-    {1.0f, 0.5f, 0.5f}, {1.0f, 0.75f, 0.5f}, {1.0f, 1.0f, 0.5f}, {0.75f, 1.0f, 0.5f},
-    {0.5f, 1.0f, 0.5f}, {0.5f, 1.0f, 0.75f}, {0.5f, 1.0f, 1.0f}, {0.5f, 0.75f, 1.0f},
-    {0.5f, 0.5f, 1.0f}, {0.75f, 0.5f, 1.0f}, {1.0f, 0.5f, 1.0f}, {1.0f, 0.5f, 0.75f}
-};
-
 AUX_RGBImageRec *LoadBMP(const char *Filename);
 
 int LoadGLTextures();
+
+void PositionParticles(int p_x, int p_y, int p_z);
+
+void ColourParticles(float p_r, float p_g, float p_b);
+
+void ParticleSpread(int p_xSpread, int p_ySpread, int p_zSpread);
 
 void InitParticles();
 

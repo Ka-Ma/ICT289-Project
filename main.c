@@ -13,7 +13,7 @@
 #include "uiOptions.h"
 #include "uiQuit.h"
 #include "AABBCol.h"
-//#include "particles.h"
+#include "particles.h"
 
 #define ESCAPE          27
 #define MAX_FILE_NAME   20
@@ -43,7 +43,7 @@ float angle = 0.0f;
 float lx = 0.0f, lz = -1.0f;
 // XZ position of the camera
 
-float x_loc = -5.0f, y_loc = 5.0f, z_loc = 0.0f;
+float x_loc = -5.0f, y_loc = 5.0f, z_loc = -10.0f;
 
 // Key states. Will be 0 when no keys are being pressed
 float deltaAngle = 0.0f;
@@ -349,6 +349,10 @@ void keyPress(unsigned char key, int x, int y)
             startTime = glutGet(GLUT_ELAPSED_TIME);
             prevTime = startTime;
             glutTimerFunc(TIMERSECS, animateFW, gState.angle);
+            PositionParticles(0, 5, -20);
+            ColourParticles(0.8f, 0.0f, 0.5f);
+            ParticleSpread(75, 50, 75);
+            InitParticles();
             break;
         }
     }
@@ -402,6 +406,17 @@ void SetAABBs()
     AddToStatic(5.0f,6.0f, 0.0f,10.0f, 0.0f, 11.0f);
 
 }
+
+//EXPLODE FIREWORK FUNCTION
+// //TO USE PARTICLES, SIMPLY USE THE FOLLOWING CALLS
+// PositionParticles(0, 5, -20);
+// ColourParticles(0.8f, 0.0f, 0.5f);
+// ParticleSpread(75, 50, 75);
+// InitParticles();
+// //WHERE fx, fy and fz ARE THE X, Y AND Z COORDINATES OF THE FIREWORK
+// //NEED BRANDON'S LAUNCH FUNCTIONS TO CONTINUE
+// //CURRENTLY ALL PARTICLES ARE ONE COLOUR, WILL WORK ON CHANGING SAID COLOUR IF NECESSARY
+
 
 void renderScene(void)
 {
@@ -534,37 +549,9 @@ void renderScene(void)
         glVertex3f(-3.75f,0.0,10.0f);
         glVertex3f(-3.75f,2.5,10.0f);
     glEnd();
-    
+
     glTranslatef(0.0f, 0.0f, 8.75f);
 
-    /*
-        //Red test box for collisions -- Leave as example for now
-        glColor3f(0.5f, 0.0f, 0.0f);
-        glBegin(GL_QUADS);
-            glVertex3f(45.0f, 0.0f, 50.0f);
-            glVertex3f(55.0f, 0.0f, 50.0f);
-            glVertex3f(55.0f, 20.0f, 50.0f);
-            glVertex3f(45.0f, 20.0f, 50.0f);
-        glEnd();
-        glBegin(GL_QUADS);
-            glVertex3f(55.0f, 0.0f, 50.0f);
-            glVertex3f(55.0f, 0.0f, 70.0f);
-            glVertex3f(55.0f, 20.0f, 70.0f);
-            glVertex3f(55.0f, 20.0f, 50.0f);
-        glEnd();
-        glBegin(GL_QUADS);
-            glVertex3f(45.0f, 0.0f, 70.0f);
-            glVertex3f(55.0f, 0.0f, 70.0f);
-            glVertex3f(55.0f, 20.0f, 70.0f);
-            glVertex3f(45.0f, 20.0f, 70.0f);
-        glEnd();
-        glBegin(GL_QUADS);
-            glVertex3f(45.0f, 0.0f, 50.0f);
-            glVertex3f(45.0f, 0.0f, 70.0f);
-            glVertex3f(45.0f, 20.0f, 70.0f);
-            glVertex3f(45.0f, 20.0f, 50.0f);
-        glEnd();
-*/
     for(int i = -3; i < 3; i++)
         for(int j = -3; j < 3; j++)
     {
@@ -601,7 +588,9 @@ void renderScene(void)
         glutPostRedisplay();
     }
 
-    //DrawParticles();
+    glPushMatrix();
+    DrawParticles();
+    glPopMatrix();
 
     glMatrixMode(GL_PROJECTION);
 
@@ -634,11 +623,10 @@ void renderScene(void)
 void myInit()
 {
 
-    /*if (!LoadGLTextures())
+    if (!LoadGLTextures())
     {
         printf("Textures not loaded");
     }
-    InitParticles();*/
 
     createFirework();
 

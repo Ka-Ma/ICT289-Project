@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#define GAMEOBJECTS     22      //Total GameObjects, Dynamic and Static
+#define PHYSICSOBJECTS     22      //Total GameObjects, Dynamic and Static
 
 #define PI              3.14159265358979323846
 #define GRAVITY         9.81
@@ -31,6 +31,6 @@ typedef struct PhysicsObject{
     bool isStatic;
 } PhysicsObject;
 
-PhysicsObject physiO[GAMEOBJECTS];
+PhysicsObject physiO[PHYSICSOBJECTS];
 
 #endif // MATH_H
