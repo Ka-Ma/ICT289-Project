@@ -38,9 +38,9 @@ float prevLoc[3] = {0.0f,0.0f,0.0f};
 
 int wRes = 1600; int hRes = 1000;
 // Angle of rotation for camera direction
-float angle = 0.0f;
+float angle = 0.0f, vAngle = 0.0f;
 // Actual vector representing the camera's direction
-float lx = 0.0f, lz = -1.0f;
+float lx = 0.0f, lz = -1.0f, ly = 5.0f;
 // XZ position of the camera
 
 float x_loc = -5.0f, y_loc = 5.0f, z_loc = -10.0f;
@@ -49,6 +49,8 @@ float x_loc = -5.0f, y_loc = 5.0f, z_loc = -10.0f;
 float deltaAngle = 0.0f;
 float deltaMove = 0;
 int xOrigin = -1;
+float vertAngle = 0.0f;
+
 
 int t;
 int frame = 0, time, timebase = 0;
@@ -242,6 +244,10 @@ void mouseMove(int x, int y)
         lx = sin(angle + deltaAngle);
         lz = -cos(angle + deltaAngle);
 
+        // Update vertical view angle
+        int hei = glutGet(GLUT_WINDOW_HEIGHT);
+        ly += ((float) hei/2 - y);
+
         glutPostRedisplay();
     }
 }
@@ -261,6 +267,8 @@ void mouseButton(int button, int state, int x, int y)
                 xOrigin = -1;
             }else
             {
+                int mouseX = glutGet(GLUT_WINDOW_WIDTH)/2, mouseY = glutGet(GLUT_WINDOW_HEIGHT)/2;
+                glutWarpPointer(mouseX, mouseY);
                 xOrigin = x;
             }
         }
@@ -466,10 +474,9 @@ void renderScene(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    gluLookAt(x_loc, y_loc, z_loc,  //eye
-              x_loc + lx, 5.0f, z_loc + lz, //look at point
-              0.0f, 1.0f, 0.0f); //up
-
+    gluLookAt(x_loc, y_loc, z_loc,
+              x_loc + lx, ly, z_loc + lz,
+              0.0f, 1.0f, 0.0f);
 
 
     //materials for lighting (note that because most of the surfaces being lit are one big surface they don't light well
