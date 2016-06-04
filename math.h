@@ -2,11 +2,16 @@
 #define MATH_H
 
 #include <stdbool.h>
+#include <GL/freeglut.h>
 
 #define PHYSICSOBJECTS     22      //Total GameObjects, Dynamic and Static
 
 #define PI              3.14159265358979323846
 #define GRAVITY         9.81
+
+//types for world gen
+typedef GLfloat point3[3];
+typedef GLfloat point4[4];
 
 typedef struct Vector3{double x, y, z;} Vector3;
 
