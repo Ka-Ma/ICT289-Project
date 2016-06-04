@@ -32,8 +32,9 @@
 #define THETA 75 //Launch angle for tubes not middle, middle tube is 0 degrees (directly upwards)
 
 int fwNum = 0;
-int startTime;
+int startTime, prevTime;
 float maxS =0;
+float prevLoc[3] = {0.0f,0.0f,0.0f};
 
 int wRes = 1600; int hRes = 1000;
 // Angle of rotation for camera direction
@@ -114,7 +115,7 @@ void animateFW(int val)
 {
 
     int currTime = glutGet(GLUT_ELAPSED_TIME);
-    int elapsedTime = currTime - startTime;
+    int elapsedTime = currTime - prevTime;
 
     if(elapsedTime<gState.fuseCh)
     {
@@ -180,11 +181,17 @@ void animateFW(int val)
         }
 
         //generate firework at {x,s,z}
+        glTranslatef((x1-(prevLoc[0])),(s-prevLoc[1]),(z1-prevLoc[2]));
+        createFirework();
+        prevLoc[0] = x1;
+        prevLoc[1] = s;
+        prevLoc[2] = z1;
 
         glutTimerFunc(TIMERSECS, animateFW, val);
     }
     else{
         //call fw detonation func
+
         maxS = 0;
     }
 }
@@ -338,7 +345,11 @@ void keyPress(unsigned char key, int x, int y)
         case 's': deltaMove = -0.5f; break;
         case 'a': deltaAngle = -0.01f; break;
         case 'd': deltaAngle = 0.01f; break;
-
+        case 'l':
+            startTime = glutGet(GLUT_ELAPSED_TIME);
+            prevTime = startTime;
+            glutTimerFunc(TIMERSECS, animateFW, gState.angle);
+            break;
         }
     }
 
@@ -379,48 +390,16 @@ void SetAABBs()
     //Static AABBs
     //Red test box
     //AddToStatic(45.0, 55.0, 0.0, 20.0, 50.0, 70.0); //Add Object Xmin, Xmax, Ymin, Ymax, Zmin, Zmax for AABB collisions
-    AddToStatic(-100.0,100.0,0.0,10,-110.0,-100.0); //Collision stuff for Back fence
-    AddToStatic(-100.0,100.0,0.0,10,100.0,110.0); //Collision stuff for Front fence
+    AddToStatic(-100.0,100.0,0.0,10,-110.0,-100.0); //Collision stuff for Back fence; front fence removed
     AddToStatic(-110.0,-100.0,0.0,10,-100.0,100.0); //Collision stuff for left fence
     AddToStatic(100.0,110.0,0.0,10,-100.0,100.0); //Collision stuff for right fence
 
-    //Collisions with water edge not including pier? don't know if it has to be so complex
-    float pierLeft = (-2.5*cos(corners)), pierRight = -pierLeft;
-    float i;
-    for(i=-100.0f;i<=100.0f;i=i+0.1)
-    {
-        float xMin = (i*cos(corners)),zMin = (-i*sin(corners));
-        if((i<(pierLeft))&&(i>pierRight))
-        {
-            AddToStatic(xMin,(xMin+0.1),0.0,10,zMin,(zMin+0.1)); //Creates 10unit high 0.1x0.1 blocks to impede movement
-        }
-    }
-
-//    //Pier collisions
-//    float pierLeftz = (-2.5*sin(corners));
-//    for(i=0.0f;i<=10.0f;i=i+0.1)
-//    {
-//        float xMax = (pierLeft+(i*cos(corners))), zMax = (pierLeftz+(i*sin(corners)));
-//        AddToStatic(xMax-0.1,xMax,0.0,10.0,zMax-0.1,zMax); //Creates 10unit high 0.1x0.1 blocks to impede movement
-//    }
-//    float pierRightz = -pierLeftz;
-//    for(i=0.0f;i<=10.0f;i=i+0.1)
-//    {
-//        float xMin = (pierRight+(i*cos(corners))), zMin = (pierRightz+(i*sin(corners)));
-//        AddToStatic(xMin, xMin+0.1,0.0,10.0,zMin,zMin+0.1); //Creates 10unit high 0.1x0.1 blocks to impede movement
-//    }
-//    //Collisions for end of pier; Includes FW box
-//    int itvl = 50, j;
-//    float pierLeftx = (pierLeft+(7.5*cos(corners))), pierRightx = (pierRight+(10*cos(corners)));
-//    float interv = (pierRightx-pierLeftx)/(float)itvl;
-//    float pierRightz2 = (pierRightz+(7.5*sin(corners))), pierLeftz2 = (pierLeftz+(10*sin(corners)));
-//    float intervz = (pierRightz2-pierLeftz2)/(float)itvl;
-//
-//    for(j=0;j<=50;j++)
-//    {
-//        float xx = pierLeftx+interv, zz=pierLeftz2+intervz;
-//        AddToStatic(xx,xx+0.1,0.0,10.0,zz,zz+0.1); //Creates 10unit high 0.1x0.1 blocks to impede movement
-//    }
+    //Water/Pier Collisions
+    AddToStatic(-100.0f,-5.0f, 0.0f,10.0f, 0.0f, 1.0f);
+    AddToStatic(5.0f,100.0f, 0.0f,10.0f, 0.0f, 1.0f);
+    AddToStatic(-6.0f,-5.0f, 0.0f,10.0f, 0.0f, 11.0f);
+    AddToStatic(-6.0f,6.0f, 0.0f,10.0f, 7.5f, 11.0f); //Includes collisions with box, as box takes up most of pier end.
+    AddToStatic(5.0f,6.0f, 0.0f,10.0f, 0.0f, 11.0f);
 
 }
 
@@ -457,37 +436,40 @@ void renderScene(void)
     glBegin(GL_POLYGON);
         glVertex3f(-1000.0f, 0.0f, -1000.0f);
         glVertex3f(1000.0f, 0.0f, -1000.0f);
-        glVertex3f(-1000.0f, 0.0f, 1000.0f);
+        glVertex3f(1000.0f, 0.0f, 0.0f);
+        glVertex3f(-1000.0f, 0.0f, 0.0f);
         //glVertex3f(100.0f, 0.0f, 100.0f);
     glEnd();
+    //water/ground cliff
+    glBegin(GL_POLYGON);
+        glVertex3f(-1000.0f, -0.05f, 0.0f);
+        glVertex3f(-1000.0f, 0.0f, 0.0f);
+        glVertex3f(1000.0f, 0.0f, 0.0f);
+        glVertex3f(1000.0f, -0.05f, 0.0f);
     //water floor
     glColor3f(0.21f, 0.11f, 0.5f);
     glBegin(GL_POLYGON);
-        glVertex3f(-1000.0f, -0.05f, 1000.0f);
+        glVertex3f(-1000.0f, -0.05f, 0.0f);
+        glVertex3f(1000.0f, -0.05f, 0.0f);
         glVertex3f(1000.0f, -0.05f, 1000.0f);
-        glVertex3f(1000.0f, -0.05f, -1000.0f);
+        glVertex3f(-1000.0f, -0.05f,1000.0f);
     glEnd();
     //fence bits
     glColor3f(0.32f, 0.18f, 0.14f);
-    glBegin(GL_QUADS);
+    glBegin(GL_QUADS); //Left Fence
         glVertex3f(-100.0f,0.0f,-100.0f);
-        glVertex3f(-100.0f,0.0f,100.0f);
-        glVertex3f(-100.0f,2.5f,100.0f);
+        glVertex3f(-100.0f,0.0f,0.0f);
+        glVertex3f(-100.0f,2.5f,0.0f);
         glVertex3f(-100.0f,2.5f,-100.0f);
     glEnd();
-    glBegin(GL_QUADS);
-        glVertex3f(-100.0f,0.0f,100.0f);
-        glVertex3f(100.0f,0.0f,100.0f);
-        glVertex3f(100.0f,2.5f,100.0f);
-        glVertex3f(-100.0f,2.5f,100.0f);
-    glEnd();
-    glBegin(GL_QUADS);
+        //Front fence removed
+    glBegin(GL_QUADS); //Right fence
         glVertex3f(100.0f,0.0f,100.0f);
         glVertex3f(100.0f,0.0f,-100.0f);
         glVertex3f(100.0f,2.5f,-100.0f);
         glVertex3f(100.0f,2.5f,100.0f);
     glEnd();
-    glBegin(GL_QUADS);
+    glBegin(GL_QUADS); //Back Fence
         glVertex3f(-100.0f,0.0f,-100.0f);
         glVertex3f(100.0f,0.0f,-100.0f);
         glVertex3f(100.0f,2.5f,-100.0f);
@@ -495,66 +477,62 @@ void renderScene(void)
     glEnd();
     //Pier
     glColor3f(0.25f,0.25f,0.25f);
-    float z1 = (2.5*sin(corners)),x2 = (2.5*cos(corners)),z2=-z1,x1=-x2; //first set of pier coords
-    float z3 = (z2+(10*cos(corners))), x3 = (x2+(10*sin(corners))), z4 = (z1+(10*cos(corners))), x4=(x1+(10*sin(corners))); //second set of pier coords
     glBegin(GL_POLYGON); //Pier top
-        glVertex3f(x1,0.0f,z1);
-        glVertex3f(x2,0.0f,z2);
-        glVertex3f(x3,0.0f,z4);
-        glVertex3f(x4,0.0f,z4);
+        glVertex3f(-5.0f, 0.0f, 0.0f);
+        glVertex3f(5.0f, 0.0f, 0.0f);
+        glVertex3f(5.0f, 0.0f, 10.0f);
+        glVertex3f(-5.0f, 0.0f, 10.0f);
     glEnd();
     //pier sides
     glBegin(GL_POLYGON);
-        glVertex3f(x1,-0.05f,z1);
-        glVertex3f(x1,0.0f,z1);
-        glVertex3f(x4,0.0f,z4);
-        glVertex3f(x4,-0.05f,z4);
+        glVertex3f(-5.0f,-0.05f,0.0f);
+        glVertex3f(-5.0f,0.0f,0.0f);
+        glVertex3f(-5.0f,0.0f,10.0f);
+        glVertex3f(-5.0f,-0.05f,10.0f);
     glEnd();
     glBegin(GL_POLYGON);
-        glVertex3f(x4,-0.05f,z4);
-        glVertex3f(x4,0.0f,z4);
-        glVertex3f(x3,0.0f,z3);
-        glVertex3f(x3,-0.05f,z3);
+        glVertex3f(-5.0f,-0.05f,10.0f);
+        glVertex3f(-5.0f,0.0f,10.0f);
+        glVertex3f(5.0f,0.0f,10.0f);
+        glVertex3f(5.0f,-0.05f,10.0f);
     glEnd();
     glBegin(GL_POLYGON);
-        glVertex3f(x3,-0.05f,z3);
-        glVertex3f(x3,0.0f,z3);
-        glVertex3f(x2,0.0f,z2);
-        glVertex3f(x2,-0.05f,z2);
+        glVertex3f(5.0f,-0.05f,10.0f);
+        glVertex3f(5.0f,0.0f,10.0f);
+        glVertex3f(5.0f,0.0f,0.0f);
+        glVertex3f(5.0f,-0.05f,0.0f);
     glEnd();
     //fireworks box
     glColor3f(0.0f,0.0f,0.0f);
-    float c1 = (x4+(1.25*sin(corners))), c2 = (c1-(2.5*sin(corners))), c3 = (c2+(2.5*cos(corners))), c4 = (c3+(2.5*cos(corners)));
-    float cz1 = (z4-(1.25*cos(corners))), cz2 = (cz1-(2.5*cos(corners))), cz3 = (cz2-(2.5*sin(corners))), cz4 = (cz3+(2.5*sin(corners)));
     glBegin(GL_POLYGON); //Box Top
-        glVertex3f(c1,2.5,cz1);
-        glVertex3f(c2,2.5,cz2);
-        glVertex3f(c3,2.5,cz3);
-        glVertex3f(c4,2.5,cz4);
+        glVertex3f(-3.75f,2.5,10.0f);
+        glVertex3f(-3.75f,2.5,7.5f);
+        glVertex3f(3.75f,2.5,7.5f);
+        glVertex3f(3.75f,2.5,10.0f);
     glEnd();
     glBegin(GL_POLYGON); //Box Left
-        glVertex3f(c1,2.5,cz1);
-        glVertex3f(c1,0.0,cz1);
-        glVertex3f(c2,0.0,cz2);
-        glVertex3f(c2,2.5,cz2);
+        glVertex3f(-3.75f,2.5,10.0f);
+        glVertex3f(-3.75f,0.0,10.0f);
+        glVertex3f(-3.75f,0.0,7.5f);
+        glVertex3f(-3.75f,2.5,7.5f);
     glEnd();
     glBegin(GL_POLYGON); //Box Front
-        glVertex3f(c2,2.5,cz2);
-        glVertex3f(c2,0.0,cz2);
-        glVertex3f(c3,0.0,cz3);
-        glVertex3f(c3,2.5,cz3);
+        glVertex3f(-3.75f,2.5,7.5f);
+        glVertex3f(-3.75f,0.0,7.5f);
+        glVertex3f(3.75f,0.0,7.5f);
+        glVertex3f(3.75f,2.5,7.5f);
     glEnd();
     glBegin(GL_POLYGON); //Box Right
-        glVertex3f(c3,2.5,cz3);
-        glVertex3f(c3,0.0,cz3);
-        glVertex3f(c4,0.0,cz4);
-        glVertex3f(c4,2.5,cz4);
+        glVertex3f(3.75f,2.5,7.5f);
+        glVertex3f(3.75f,0.0,7.5f);
+        glVertex3f(3.75f,0.0,10.0f);
+        glVertex3f(3.75f,2.5,10.0f);
     glEnd();
     glBegin(GL_POLYGON); //Box Back
-        glVertex3f(c4,2.5,cz4);
-        glVertex3f(c4,0.0,cz4);
-        glVertex3f(c1,0.0,cz1);
-        glVertex3f(c1,2.5,cz1);
+        glVertex3f(3.75f,2.5,10.0f);
+        glVertex3f(3.75f,0.0,10.0f);
+        glVertex3f(-3.75f,0.0,10.0f);
+        glVertex3f(-3.75f,2.5,10.0f);
     glEnd();
 
     /*
@@ -658,7 +636,6 @@ void myInit()
     {
         printf("Textures not loaded");
     }
-
     InitParticles();*/
 
     createFirework();
