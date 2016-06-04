@@ -534,6 +534,8 @@ void renderScene(void)
         glVertex3f(-3.75f,0.0,10.0f);
         glVertex3f(-3.75f,2.5,10.0f);
     glEnd();
+    
+    glTranslatef(0.0f, 0.0f, 8.75f);
 
     /*
         //Red test box for collisions -- Leave as example for now
