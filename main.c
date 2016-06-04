@@ -43,7 +43,7 @@ float angle = 0.0f;
 float lx = 0.0f, lz = -1.0f;
 // XZ position of the camera
 
-float x_loc = -5.0f, y_loc = 5.0f, z_loc = 0.0f;
+float x_loc = -5.0f, y_loc = 5.0f, z_loc = -10.0f;
 
 // Key states. Will be 0 when no keys are being pressed
 float deltaAngle = 0.0f;
@@ -73,9 +73,9 @@ void createFirework()
     quadObj = gluNewQuadric();
     gluQuadricDrawStyle(quadObj, GLU_FILL);
     gluQuadricNormals(quadObj, GLU_SMOOTH);
-    gluCylinder(quadObj, 0.6, 0.6, 2.4, 24, 4);
+    gluCylinder(quadObj, 0.6, 0.6, 0.4, 24, 4);
     gluDisk(quadObj, 0, 0.6, 24, 5);
-    glTranslatef(0, 0, 3);
+    glTranslatef(0, 0, 1);
     gluSphere(quadObj, 0.9, 24, 24);
     glEndList();
 }
@@ -403,8 +403,37 @@ void SetAABBs()
 
 }
 
+//for lighting KM
+void calcNormal( float p1[3], float p2[3], float p3[3], float n[3])
+{
+    float v1[3], v2[3], length;
+
+    // calculate two vectors from given vertices
+    v1[0] = p2[0] - p1[0];
+    v1[1] = p2[1] - p1[1];
+    v1[2] = p2[2] - p1[2];
+    v2[0] = p3[0] - p1[0];
+    v2[1] = p3[1] - p1[1];
+    v2[2] = p3[2] - p1[2];
+    // calculate cross product of v1 & v2 to get normal
+    n[0] = v1[1]*v2[2] - v2[1]*v1[2];
+    n[1] = v1[2]*v2[0] - v2[2]*v1[0];
+    n[2] = v1[0]*v2[1] - v2[0]*v1[1];
+    // calculate length of vector
+    length = (float)sqrt (n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+    // make sure vector is not too close to zero!
+    if (length == 0.0f)
+    length = 1.0f;
+    // normalise vector by dividing by length
+    n[0] /= length;
+    n[1] /= length;
+    n[2] /= length;
+}
+
 void renderScene(void)
 {
+    //normal for object being lit
+    float normal[3];
 
     if(!collisionsAdded)            //If static collisions not added to array
     {                               //NOTE: Must be initiated before computePos called
@@ -423,158 +452,199 @@ void renderScene(void)
         glutPostRedisplay();
     }
 
+
+    //Sun position before lookat so it doesn't move with lookat
+    GLfloat sun_position[] = {0,3,-10,0}; // at horizon
+    GLfloat sun_specular[] = {.1,.1,.1,1};
+    GLfloat sun_ambient[] = {.25,.25,.25,1};
+    GLfloat sun_diffuse[] = {1.0,1.0,1.0,1}; //white light
+    glLightfv(GL_LIGHT0, GL_POSITION, sun_position);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, sun_diffuse); //colour of the light
+    glLightfv(GL_LIGHT0, GL_SPECULAR, sun_specular);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, sun_ambient);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
+    gluLookAt(x_loc, y_loc, z_loc,  //eye
+              x_loc + lx, 5.0f, z_loc + lz, //look at point
+              0.0f, 1.0f, 0.0f); //up
 
-    gluLookAt(x_loc, y_loc, z_loc,
-              x_loc + lx, 5.0f, z_loc + lz,
-              0.0f, 1.0f, 0.0f);
 
-    glColor3f(0.0f, 0.21f, 0.0f);
+
+    //materials for lighting (note that because most of the surfaces being lit are one big surface they don't light well
+    //colours
+    GLfloat grassClr[] = {0.0f, 0.21f, 0.0f, 0.0f};
+    GLfloat waterClr[] = {0.21f, 0.11f, 0.5f, 0.0f};
+    GLfloat fenceClr[] = {0.32f, 0.18f, 0.14f, 0.0f};
+    GLfloat pierClr[] = {0.25f,0.25f,0.25f, 0.0f};
+    GLfloat boxClr[] = {0.0f,0.0f,0.0f, 0.0f};
+    GLfloat white[] = {1.0f, 1.0f, 1.0f, 0.0f};
+
     //grass floor
+    point3 grassV[4] = {{-1000.0f, 0.0f, -1000.0f}, {1000.0f, 0.0f, -1000.0f}, {1000.0f, 0.0f, 0.0f}, {-1000.0f, 0.0f, 0.0f}};
+    calcNormal(grassV[1], grassV[0], grassV[2], normal);
     glBegin(GL_POLYGON);
-        glVertex3f(-1000.0f, 0.0f, -1000.0f);
-        glVertex3f(1000.0f, 0.0f, -1000.0f);
-        glVertex3f(1000.0f, 0.0f, 0.0f);
-        glVertex3f(-1000.0f, 0.0f, 0.0f);
-        //glVertex3f(100.0f, 0.0f, 100.0f);
+        glNormal3f(0,1,0);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, grassClr);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, white);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+        glVertex3fv(grassV[0]);
+        glVertex3fv(grassV[1]);
+        glVertex3fv(grassV[2]);
+        glVertex3fv(grassV[3]);
     glEnd();
     //water/ground cliff
+    point3 wtrGrdV[4] = {{-1000.0f, -0.05f, 0.0f}, {-1000.0f, 0.0f, 0.0f}, {1000.0f, 0.0f, 0.0f}, {1000.0f, -0.05f, 0.0f}};
+    calcNormal(wtrGrdV[0], wtrGrdV[1], wtrGrdV[2], normal);
     glBegin(GL_POLYGON);
-        glVertex3f(-1000.0f, -0.05f, 0.0f);
-        glVertex3f(-1000.0f, 0.0f, 0.0f);
-        glVertex3f(1000.0f, 0.0f, 0.0f);
-        glVertex3f(1000.0f, -0.05f, 0.0f);
+        glNormal3fv(normal);
+        glVertex3fv(wtrGrdV[0]);
+        glVertex3fv(wtrGrdV[1]);
+        glVertex3fv(wtrGrdV[2]);
+        glVertex3fv(wtrGrdV[3]);
+    glEnd();
     //water floor
-    glColor3f(0.21f, 0.11f, 0.5f);
+    point3 waterV[4] = {{-1000.0f, -0.05f, 0.0f}, {1000.0f, -0.05f, 0.0f}, {1000.0f, -0.05f, 1000.0f}, {-1000.0f, -0.05f,1000.0f}};
+    calcNormal(waterV[0], waterV[1], waterV[2], normal);
     glBegin(GL_POLYGON);
-        glVertex3f(-1000.0f, -0.05f, 0.0f);
-        glVertex3f(1000.0f, -0.05f, 0.0f);
-        glVertex3f(1000.0f, -0.05f, 1000.0f);
-        glVertex3f(-1000.0f, -0.05f,1000.0f);
+        glNormal3f(0,1,0);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, waterClr);
+        //glMaterialf(GL_FRONT, GL_SHININESS, 100);
+        glVertex3fv(waterV[0]);
+        glVertex3fv(waterV[1]);
+        glVertex3fv(waterV[2]);
+        glVertex3fv(waterV[3]);
     glEnd();
     //fence bits
-    glColor3f(0.32f, 0.18f, 0.14f);
+    point3 fenceLV[4] = {{-100.0f,0.0f,-100.0f}, {-100.0f,0.0f,0.0f}, {-100.0f,2.5f,0.0f}, {-100.0f,2.5f,-100.0f}};
+    calcNormal(fenceLV[1], fenceLV[0], fenceLV[2], normal);
     glBegin(GL_QUADS); //Left Fence
-        glVertex3f(-100.0f,0.0f,-100.0f);
-        glVertex3f(-100.0f,0.0f,0.0f);
-        glVertex3f(-100.0f,2.5f,0.0f);
-        glVertex3f(-100.0f,2.5f,-100.0f);
+        glNormal3fv(normal);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, fenceClr);
+        glVertex3fv(fenceLV[0]);
+        glVertex3fv(fenceLV[1]);
+        glVertex3fv(fenceLV[2]);
+        glVertex3fv(fenceLV[3]);
     glEnd();
-        //Front fence removed
-    glBegin(GL_QUADS); //Right fence
-        glVertex3f(100.0f,0.0f,100.0f);
-        glVertex3f(100.0f,0.0f,-100.0f);
-        glVertex3f(100.0f,2.5f,-100.0f);
-        glVertex3f(100.0f,2.5f,100.0f);
+    //Front fence removed
+    //Right fence
+    point3 fenceRV[4] = {{100.0f,0.0f,100.0f}, {100.0f,0.0f,-100.0f}, {100.0f,2.5f,-100.0f}, {100.0f,2.5f,100.0f}};
+    calcNormal(fenceRV[1], fenceRV[0], fenceRV[2], normal);
+    glBegin(GL_QUADS);
+        glNormal3fv(normal);
+        glVertex3fv(fenceRV[0]);
+        glVertex3fv(fenceRV[1]);
+        glVertex3fv(fenceRV[2]);
+        glVertex3fv(fenceRV[3]);
     glEnd();
-    glBegin(GL_QUADS); //Back Fence
-        glVertex3f(-100.0f,0.0f,-100.0f);
-        glVertex3f(100.0f,0.0f,-100.0f);
-        glVertex3f(100.0f,2.5f,-100.0f);
-        glVertex3f(-100.0f,2.5f,-100.0f);
+    //Back Fence
+    point3 fenceBV[4] = {{-100.0f,0.0f,-100.0f}, {100.0f,0.0f,-100.0f}, {100.0f,2.5f,-100.0f}, {-100.0f,2.5f,-100.0f}};
+    calcNormal(fenceBV[0], fenceBV[1], fenceBV[2], normal);
+    glBegin(GL_QUADS);
+        glNormal3fv(normal);
+        glVertex3fv(fenceBV[0]);
+        glVertex3fv(fenceBV[1]);
+        glVertex3fv(fenceBV[2]);
+        glVertex3fv(fenceBV[3]);
     glEnd();
     //Pier
-    glColor3f(0.25f,0.25f,0.25f);
+    point3 pierV[4] = {{-5.0f, 0.0f, 0.0f}, {5.0f, 0.0f, 0.0f}, {5.0f, 0.0f, 10.0f}, {-5.0f, 0.0f, 10.0f}};
+    calcNormal(pierV[0], pierV[1], pierV[2], normal);
     glBegin(GL_POLYGON); //Pier top
-        glVertex3f(-5.0f, 0.0f, 0.0f);
-        glVertex3f(5.0f, 0.0f, 0.0f);
-        glVertex3f(5.0f, 0.0f, 10.0f);
-        glVertex3f(-5.0f, 0.0f, 10.0f);
+        glNormal3f(0,1,0);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, pierClr);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, white);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+        glVertex3fv(pierV[0]);
+        glVertex3fv(pierV[1]);
+        glVertex3fv(pierV[2]);
+        glVertex3fv(pierV[3]);
     glEnd();
     //pier sides
+    point3 pierSV[12] = {{-5.0f,-0.05f,0.0f}, {-5.0f,0.0f,0.0f}, {-5.0f,0.0f,10.0f}, {-5.0f,-0.05f,10.0f},
+                        {-5.0f,-0.05f,10.0f}, {-5.0f,0.0f,10.0f}, {5.0f,0.0f,10.0f}, {5.0f,-0.05f,10.0f},
+                        {5.0f,-0.05f,10.0f}, {5.0f,0.0f,10.0f}, {5.0f,0.0f,0.0f}, {5.0f,-0.05f,0.0f}};
+    calcNormal(pierSV[1], pierSV[0], pierSV[2], normal);
     glBegin(GL_POLYGON);
-        glVertex3f(-5.0f,-0.05f,0.0f);
-        glVertex3f(-5.0f,0.0f,0.0f);
-        glVertex3f(-5.0f,0.0f,10.0f);
-        glVertex3f(-5.0f,-0.05f,10.0f);
+        glNormal3fv(normal);
+        glVertex3fv(pierSV[0]);
+        glVertex3fv(pierSV[1]);
+        glVertex3fv(pierSV[2]);
+        glVertex3fv(pierSV[3]);
     glEnd();
+    calcNormal(pierSV[5], pierSV[4], pierSV[6], normal);
     glBegin(GL_POLYGON);
-        glVertex3f(-5.0f,-0.05f,10.0f);
-        glVertex3f(-5.0f,0.0f,10.0f);
-        glVertex3f(5.0f,0.0f,10.0f);
-        glVertex3f(5.0f,-0.05f,10.0f);
+        glNormal3fv(normal);
+        glVertex3fv(pierSV[4]);
+        glVertex3fv(pierSV[5]);
+        glVertex3fv(pierSV[6]);
+        glVertex3fv(pierSV[7]);
     glEnd();
+    calcNormal(pierSV[9], pierSV[8], pierSV[10], normal);
     glBegin(GL_POLYGON);
-        glVertex3f(5.0f,-0.05f,10.0f);
-        glVertex3f(5.0f,0.0f,10.0f);
-        glVertex3f(5.0f,0.0f,0.0f);
-        glVertex3f(5.0f,-0.05f,0.0f);
+        glNormal3fv(normal);
+        glVertex3fv(pierSV[8]);
+        glVertex3fv(pierSV[9]);
+        glVertex3fv(pierSV[10]);
+        glVertex3fv(pierSV[11]);
     glEnd();
     //fireworks box
-    glColor3f(0.0f,0.0f,0.0f);
+    point3 fwBoxV[20] = {{-3.75f,2.5,10.0f}, {-3.75f,2.5,7.5f}, {3.75f,2.5,7.5f}, {3.75f,2.5,10.0f}, //top
+                        {-3.75f,2.5,10.0f}, {-3.75f,0.0,10.0f}, {-3.75f,0.0,7.5f}, {-3.75f,2.5,7.5f}, //left
+                        {-3.75f,2.5,7.5f}, {-3.75f,0.0,7.5f}, {3.75f,0.0,7.5f}, {3.75f,2.5,7.5f}, //front
+                        {3.75f,2.5,7.5f}, {3.75f,0.0,7.5f}, {3.75f,0.0,10.0f}, {3.75f,2.5,10.0f}, //right
+                        {3.75f,2.5,10.0f}, {3.75f,0.0,10.0f}, {-3.75f,0.0,10.0f}, {-3.75f,2.5,10.0f}}; //back
+    calcNormal(fwBoxV[1], fwBoxV[0], fwBoxV[2], normal);
     glBegin(GL_POLYGON); //Box Top
-        glVertex3f(-3.75f,2.5,10.0f);
-        glVertex3f(-3.75f,2.5,7.5f);
-        glVertex3f(3.75f,2.5,7.5f);
-        glVertex3f(3.75f,2.5,10.0f);
+        glNormal3f(0,1,0);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, boxClr);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, white);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+        glVertex3fv(fwBoxV[0]);
+        glVertex3fv(fwBoxV[1]);
+        glVertex3fv(fwBoxV[2]);
+        glVertex3fv(fwBoxV[3]);
     glEnd();
+    calcNormal(fwBoxV[5], fwBoxV[4], fwBoxV[6], normal);
     glBegin(GL_POLYGON); //Box Left
-        glVertex3f(-3.75f,2.5,10.0f);
-        glVertex3f(-3.75f,0.0,10.0f);
-        glVertex3f(-3.75f,0.0,7.5f);
-        glVertex3f(-3.75f,2.5,7.5f);
+        glNormal3fv(normal);
+        glVertex3fv(fwBoxV[4]);
+        glVertex3fv(fwBoxV[5]);
+        glVertex3fv(fwBoxV[6]);
+        glVertex3fv(fwBoxV[7]);
     glEnd();
+    calcNormal(fwBoxV[9], fwBoxV[8], fwBoxV[10], normal);
     glBegin(GL_POLYGON); //Box Front
-        glVertex3f(-3.75f,2.5,7.5f);
-        glVertex3f(-3.75f,0.0,7.5f);
-        glVertex3f(3.75f,0.0,7.5f);
-        glVertex3f(3.75f,2.5,7.5f);
+        glNormal3fv(normal);
+        glVertex3fv(fwBoxV[8]);
+        glVertex3fv(fwBoxV[9]);
+        glVertex3fv(fwBoxV[10]);
+        glVertex3fv(fwBoxV[11]);
     glEnd();
+    calcNormal(fwBoxV[13], fwBoxV[12], fwBoxV[14], normal);
     glBegin(GL_POLYGON); //Box Right
-        glVertex3f(3.75f,2.5,7.5f);
-        glVertex3f(3.75f,0.0,7.5f);
-        glVertex3f(3.75f,0.0,10.0f);
-        glVertex3f(3.75f,2.5,10.0f);
+        glNormal3fv(normal);
+        glVertex3fv(fwBoxV[12]);
+        glVertex3fv(fwBoxV[13]);
+        glVertex3fv(fwBoxV[14]);
+        glVertex3fv(fwBoxV[15]);
     glEnd();
+    calcNormal(fwBoxV[17], fwBoxV[16], fwBoxV[18], normal);
     glBegin(GL_POLYGON); //Box Back
-        glVertex3f(3.75f,2.5,10.0f);
-        glVertex3f(3.75f,0.0,10.0f);
-        glVertex3f(-3.75f,0.0,10.0f);
-        glVertex3f(-3.75f,2.5,10.0f);
+        glNormal3fv(normal);
+        glVertex3fv(fwBoxV[16]);
+        glVertex3fv(fwBoxV[17]);
+        glVertex3fv(fwBoxV[18]);
+        glVertex3fv(fwBoxV[19]);
     glEnd();
 
-    /*
-        //Red test box for collisions -- Leave as example for now
-        glColor3f(0.5f, 0.0f, 0.0f);
-        glBegin(GL_QUADS);
-            glVertex3f(45.0f, 0.0f, 50.0f);
-            glVertex3f(55.0f, 0.0f, 50.0f);
-            glVertex3f(55.0f, 20.0f, 50.0f);
-            glVertex3f(45.0f, 20.0f, 50.0f);
-        glEnd();
-        glBegin(GL_QUADS);
-            glVertex3f(55.0f, 0.0f, 50.0f);
-            glVertex3f(55.0f, 0.0f, 70.0f);
-            glVertex3f(55.0f, 20.0f, 70.0f);
-            glVertex3f(55.0f, 20.0f, 50.0f);
-        glEnd();
-        glBegin(GL_QUADS);
-            glVertex3f(45.0f, 0.0f, 70.0f);
-            glVertex3f(55.0f, 0.0f, 70.0f);
-            glVertex3f(55.0f, 20.0f, 70.0f);
-            glVertex3f(45.0f, 20.0f, 70.0f);
-        glEnd();
-        glBegin(GL_QUADS);
-            glVertex3f(45.0f, 0.0f, 50.0f);
-            glVertex3f(45.0f, 0.0f, 70.0f);
-            glVertex3f(45.0f, 20.0f, 70.0f);
-            glVertex3f(45.0f, 20.0f, 50.0f);
-        glEnd();
-*/
-    for(int i = -3; i < 3; i++)
-        for(int j = -3; j < 3; j++)
-    {
-        glPushMatrix();
 
-        glTranslatef(i * 20.0, 0, j * 20.0);
-        glScalef(0.05f, 0.05f, 0.05f);
-
-        //drawHouse();          Commented out to remove all house instances from project. Leaves blank "test" ground
-
-        glPopMatrix();
-    }
+    //firework shell material properties
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, fenceClr);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, white);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+    glMaterialf(GL_FRONT, GL_SHININESS, 10);
 
     glPushMatrix();
     //glScalef(5, 5, 5);
@@ -583,9 +653,6 @@ void renderScene(void)
     glCallList(FIREWORK);
     glPopMatrix();
 
-    // readModels();      Commented out as we don't want bones either KM
-
-    // drawModels();      Commented out as we don't want bones either KM
 
     frame++;
     time = glutGet(GLUT_ELAPSED_TIME);
@@ -598,6 +665,9 @@ void renderScene(void)
         //y -= 1;
         glutPostRedisplay();
     }
+
+    //will need to disable lighting here for firework particles & UI KM
+    glDisable(GL_LIGHTING);
 
     //DrawParticles();
 
@@ -619,12 +689,16 @@ void renderScene(void)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
+    //if UI states are true draw UI now KM
     if(gState.uiSettings)
         displayUISettings();
     if(gState.uiOptions)
         displayUIOptions();
     if(gState.uiQuit)
         displayUIQuit();
+
+    //will need to re-enable lighting here for rest of world KM
+    glEnable(GL_LIGHTING);
 
     glutSwapBuffers();
 }
@@ -643,6 +717,28 @@ void myInit()
     //set Sky colour
     //glClearColor(0.32f, 0.21f, 0.53f, 0.0f); pansy
     glClearColor(0.21f, 0.11f, 0.43, 0.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+     //Enable lighting
+    glEnable (GL_LIGHTING); //
+    glEnable (GL_LIGHT0); // sun
+    glEnable (GL_LIGHT1); // firework centroid
+    glShadeModel(GL_SMOOTH);
+
+    GLfloat fw_position[] = {x_loc,y_loc,z_loc,1}; // at firework centroid but following camera for now
+    GLfloat fw_specular[] = {.1,.1,.1,1};
+    GLfloat fw_ambient[] = {.1,.1,.1,1};
+    GLfloat fw_diffuse[] = {1.0,1.0,1.0,1}; //white light for now
+    glLightfv(GL_LIGHT1, GL_POSITION, fw_position);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, fw_diffuse); //colour of the firework
+    glLightfv(GL_LIGHT1, GL_SPECULAR, fw_specular);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, fw_ambient);
+    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.0);
+    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 1.0);
+    glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.5);
+
     // Register callbacks
     glutDisplayFunc(renderScene);
     glutReshapeFunc(changeSize);
@@ -663,7 +759,7 @@ int main(int argc, char **argv)
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(5, 5);
     glutInitWindowSize(wRes, hRes);
-    glutCreateWindow("ICT289 Project");
+    glutCreateWindow("ICT289 Project - Team 8");
 
     // Register Callbacks
     myInit();
