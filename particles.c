@@ -2,7 +2,6 @@
 float slowdown = 2.0f;
 float xspeed;
 float yspeed;
-//float zoom = -40.0f;
 
 GLuint loop;
 GLuint col;
@@ -12,13 +11,13 @@ GLuint texture[1];
 
 AUX_RGBImageRec *LoadBMP(const char *Filename)
 {
-    FILE*File=NULL;
+    FILE *File=NULL;
     if(!Filename)
     {
         return NULL;
     }
 
-    File = fopen(Filename, 'r');
+    File = fopen(Filename, "r");
     if (File)
     {
         fclose(File);
@@ -35,7 +34,7 @@ int LoadGLTextures()
 
     memset(TextureImage, 0, sizeof(void*)*1);
 
-    if(TextureImage[0]==LoadBMP("Data/Particle.bmp"))
+    if(TextureImage[0]==LoadBMP("Data\\Particle.bmp"))
     {
         Status=TRUE;
         glGenTextures(1, &texture[0]);
@@ -57,47 +56,68 @@ int LoadGLTextures()
     return Status;
 }
 
+void PositionParticles(int p_x, int p_y, int p_z)
+{
+    for(loop = 0; loop < MAX_PARTICLES; loop++)
+    {
+        particle[loop].x = p_x;
+        particle[loop].y = p_y;
+        particle[loop].z = p_z;
+    }
+}
+
+void ColourParticles(float p_rColour, float p_gColour, float p_bColour)
+{
+    for(loop = 0; loop < MAX_PARTICLES; loop++)
+    {
+        particle[loop].r = p_rColour;
+        particle[loop].g = p_gColour;
+        particle[loop].b = p_bColour;
+    }
+}
+
+void ParticleSpread(int p_xSpread, int p_ySpread, int p_zSpread)
+{
+    for(loop = 0; loop < MAX_PARTICLES; loop++)
+    {
+        particle[loop].xi = (float)((rand() % p_xSpread) - 26.0f) * 10.0f;
+        particle[loop].yi = (float)((rand() & p_ySpread) - 25.0f) * 10.0f;
+        particle[loop].zi = (float)((rand() & p_zSpread) - 25.0f) * 10.0f;
+    }
+}
+
 void InitParticles()
 {
     for(loop = 0; loop < MAX_PARTICLES; loop++)
     {
         particle[loop].active = true;
-        particle[loop].life = 1.0f;
-        particle[loop].fade = (float)(rand()%100) / 1000.0f + 0.003f;
-        particle[loop].r = colours[loop * (12/MAX_PARTICLES)][0];
-        particle[loop].g = colours[loop * (12/MAX_PARTICLES)][1];
-        particle[loop].b = colours[loop * (12/MAX_PARTICLES)][2];
-        particle[loop].xi = (float)((rand() % 50) - 26.0f) * 10.0f;
-        particle[loop].yi = (float)((rand() & 50) - 25.0f) * 10.0f;
-        particle[loop].zi = (float)((rand() & 50) - 25.0f) * 10.0f;
+        particle[loop].life = 5.0f;
+        particle[loop].fade = 0.0025;
         particle[loop].xg = 0.0f;
-        particle[loop].yg = -0.8f;
+        particle[loop].yg = -0.2f;
         particle[loop].zg = 0.0f;
     }
 }
 
 void DrawParticles()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
     for (loop = 0; loop < MAX_PARTICLES; loop++)
     {
         if(particle[loop].active)
         {
-            float x = particle[loop].x;
-            float y = particle[loop].y;
-            float z = particle[loop].z;
+            float p_x = particle[loop].x;
+            float p_y = particle[loop].y;
+            float p_z = particle[loop].z;
             glColor4f(particle[loop].r, particle[loop].g, particle[loop].b, particle[loop].life);
             glBegin(GL_TRIANGLE_STRIP);
             glTexCoord2d(1, 1);
-            glVertex3f(x + 0.5f, y + 0.5f, z);
+            glVertex3f(p_x + 0.5f, p_y + 0.5f, p_z);
             glTexCoord2d(0, 1);
-            glVertex3f(x - 0.5f, y + 0.5f, z);
+            glVertex3f(p_x - 0.5f, p_y + 0.5f, p_z);
             glTexCoord2d(1, 0);
-            glVertex3f(x + 0.5f, y - 0.5f, z);
+            glVertex3f(p_x + 0.5f, p_y - 0.5f, p_z);
             glTexCoord2d(0, 0);
-            glVertex3f(x - 0.5f, y - 0.5f, z);
+            glVertex3f(p_x - 0.5f, p_y - 0.5f, p_z);
             glEnd();
             particle[loop].x += particle[loop].xi / (slowdown * 1000);
             particle[loop].y += particle[loop].yi / (slowdown * 1000);
@@ -108,17 +128,7 @@ void DrawParticles()
             particle[loop].life -= particle[loop].fade;
             if (particle[loop].life < 0.0f)
             {
-                particle[loop].life = 1.0f;
-                particle[loop].fade = (float)(rand() % 100) / 1000.0f + 0.003f;
-                particle[loop].x = 0.0f;
-                particle[loop].y = 0.0f;
-                particle[loop].z = 0.0f;
-                particle[loop].xi = xspeed + (float)((rand() % 60) - 32.0f);
-                particle[loop].yi = yspeed + (float)((rand() % 60) - 30.0f);
-                particle[loop].zi = (float)((rand() % 60) - 30.0f);
-                particle[loop].r = colours[col][0];
-                particle[loop].g = colours[col][1];
-                particle[loop].b = colours[col][2];
+                particle[loop].active = false;
             }
         }
     }

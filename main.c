@@ -13,7 +13,7 @@
 #include "uiOptions.h"
 #include "uiQuit.h"
 #include "AABBCol.h"
-//#include "particles.h"
+#include "particles.h"
 
 #define ESCAPE          27
 #define MAX_FILE_NAME   20
@@ -357,6 +357,10 @@ void keyPress(unsigned char key, int x, int y)
             startTime = glutGet(GLUT_ELAPSED_TIME);
             prevTime = startTime;
             glutTimerFunc(TIMERSECS, animateFW, gState.angle);
+            PositionParticles(0, 5, -20);
+            ColourParticles(0.8f, 0.0f, 0.5f);
+            ParticleSpread(75, 50, 75);
+            InitParticles();
             break;
         }
     }
@@ -437,6 +441,16 @@ void calcNormal( float p1[3], float p2[3], float p3[3], float n[3])
     n[1] /= length;
     n[2] /= length;
 }
+
+//EXPLODE FIREWORK FUNCTION
+// //TO USE PARTICLES, SIMPLY USE THE FOLLOWING CALLS
+// PositionParticles(0, 5, -20);
+// ColourParticles(0.8f, 0.0f, 0.5f);
+// ParticleSpread(75, 50, 75);
+// InitParticles();
+// //WHERE fx, fy and fz ARE THE X, Y AND Z COORDINATES OF THE FIREWORK
+// //NEED BRANDON'S LAUNCH FUNCTIONS TO CONTINUE
+// //CURRENTLY ALL PARTICLES ARE ONE COLOUR, WILL WORK ON CHANGING SAID COLOUR IF NECESSARY
 
 void renderScene(void)
 {
@@ -645,6 +659,19 @@ void renderScene(void)
         glVertex3fv(fwBoxV[18]);
         glVertex3fv(fwBoxV[19]);
     glEnd();
+<<<<<<< HEAD
+
+    glTranslatef(0.0f, 0.0f, 8.75f);
+
+    for(int i = -3; i < 3; i++)
+        for(int j = -3; j < 3; j++)
+    {
+        glPushMatrix();
+
+        glTranslatef(i * 20.0, 0, j * 20.0);
+        glScalef(0.05f, 0.05f, 0.05f);
+=======
+>>>>>>> master
 
 
     //firework shell material properties
@@ -673,10 +700,16 @@ void renderScene(void)
         glutPostRedisplay();
     }
 
+<<<<<<< HEAD
+    glPushMatrix();
+    DrawParticles();
+    glPopMatrix();
+=======
     //will need to disable lighting here for firework particles & UI KM
     glDisable(GL_LIGHTING);
 
     //DrawParticles();
+>>>>>>> master
 
     glMatrixMode(GL_PROJECTION);
 
@@ -713,11 +746,10 @@ void renderScene(void)
 void myInit()
 {
 
-    /*if (!LoadGLTextures())
+    if (!LoadGLTextures())
     {
         printf("Textures not loaded");
     }
-    InitParticles();*/
 
     createFirework();
 
