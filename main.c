@@ -240,13 +240,14 @@ void mouseMove(int x, int y)
         deltaAngle = (x - xOrigin) * 0.001f;
         xOrigin = x;
 
-        // Update camera's direction
-        lx = sin(angle + deltaAngle);
-        lz = -cos(angle + deltaAngle);
-
         // Update vertical view angle
         int hei = glutGet(GLUT_WINDOW_HEIGHT);
-        ly += ((float) hei/2 - y);
+        vertAngle += ((float) hei/2 - y);
+
+        // Update camera's direction
+        lx = cos(vertAngle) * sin(angle + deltaAngle);
+        ly = sin(vertAngle);
+        lz = cos(vertAngle) * cos(angle + deltaAngle);
 
         glutPostRedisplay();
     }
@@ -659,20 +660,10 @@ void renderScene(void)
         glVertex3fv(fwBoxV[18]);
         glVertex3fv(fwBoxV[19]);
     glEnd();
-<<<<<<< HEAD
 
     glTranslatef(0.0f, 0.0f, 8.75f);
 
-    for(int i = -3; i < 3; i++)
-        for(int j = -3; j < 3; j++)
-    {
-        glPushMatrix();
-
-        glTranslatef(i * 20.0, 0, j * 20.0);
-        glScalef(0.05f, 0.05f, 0.05f);
-=======
->>>>>>> master
-
+    //removed the draw house loops
 
     //firework shell material properties
     glMaterialfv(GL_FRONT, GL_DIFFUSE, fenceClr);
