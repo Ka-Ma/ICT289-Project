@@ -64,9 +64,6 @@ bool filesUnRead = true;
 bool collisionsAdded = false;
 bool isColliding = false;
 
-//For Collision corners (pier)
-double corners = 45*M_PI/180.0;
-
 void createFirework()
 {
     GLUquadricObj *quadObj;
@@ -95,7 +92,13 @@ void readModels()
         filesUnRead = false;
     }
 }
-
+void FWBoom(float x, float s, float z)
+{
+    PositionParticles(x, s, z);
+    ColourParticles(0.8f, 0.0f, 0.5f);
+    ParticleSpread(75, 50, 75);
+    InitParticles();
+}
 void drawModels()
 {
     glPushMatrix();
@@ -193,7 +196,7 @@ void animateFW(int val)
     }
     else{
         //call fw detonation func
-
+        FWBoom(x1,s,z1);
         maxS = 0;
     }
 }
@@ -691,16 +694,13 @@ void renderScene(void)
         glutPostRedisplay();
     }
 
-<<<<<<< HEAD
     glPushMatrix();
     DrawParticles();
     glPopMatrix();
-=======
     //will need to disable lighting here for firework particles & UI KM
     glDisable(GL_LIGHTING);
 
     //DrawParticles();
->>>>>>> master
 
     glMatrixMode(GL_PROJECTION);
 
