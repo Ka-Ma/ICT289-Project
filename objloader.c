@@ -1,6 +1,6 @@
 #include "objloader.h"
 
-const char* readModelFile(char *fTitle, const int index)
+char* readModelFile(char *fTitle, int index)
 {
     char str[5];
 
@@ -33,9 +33,6 @@ const char* readModelFile(char *fTitle, const int index)
         fscanf(oFile, "%lf", &(objectList[index].coords)[i].x);
         fscanf(oFile, "%lf", &(objectList[index].coords)[i].y);
         fscanf(oFile, "%lf", &(objectList[index].coords)[i].z);
-        //printf("%.3f ",  (objectList[index].coords)[i].x);
-        //printf("%.3f ",  (objectList[index].coords)[i].y);
-        //printf("%.3f\n", (objectList[index].coords)[i].z);
         }
 
         int vertLine1, vertLine2, vertLine3;
@@ -60,14 +57,6 @@ const char* readModelFile(char *fTitle, const int index)
                 (objectList[index].facets)[i].coord3.x = (objectList[index].coords)[vertLine3].x;
                 (objectList[index].facets)[i].coord3.y = (objectList[index].coords)[vertLine3].y;
                 (objectList[index].facets)[i].coord3.z = (objectList[index].coords)[vertLine3].z;
-
-                //printf("%d ",    (objectList[index].facets)[i].faceType);
-                //printf("%d ", vertLine1);
-                //printf("%d ", vertLine2);
-                //printf("%d\n", vertLine3);
-                //printf("%.3f ",  (objectList[index].facets)[i].x);
-                //printf("%.3f ",  (objectList[index].facets)[i].y);
-                //printf("%.3f\n", (objectList[index].facets)[i].z);
             }
 
         }
