@@ -184,7 +184,7 @@ void animateFW(int val)
 
         //generate firework at {x,s,z}
         glTranslatef((x1-(prevLoc[0])),(s-prevLoc[1]),(z1-prevLoc[2]));
-        createFirework();
+        glCallList(FIREWORK);
         prevLoc[0] = x1;
         prevLoc[1] = s;
         prevLoc[2] = z1;
