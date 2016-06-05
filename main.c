@@ -92,8 +92,8 @@ void readModels()
     {
         char* status;
 
-        printf("Loading bone.off...");
-        status = readModelFile("bone.off", MODEL_ONE);
+        printf("Loading Duck.off...");
+        status = readModelFile("Data/Duck.off", MODEL_ONE);
         printf(status);
 
         filesUnRead = false;
@@ -109,14 +109,14 @@ void FWBoom(float x, float s, float z)
 void drawModels()
 {
     glPushMatrix();
-    glTranslatef(-30.0f, 40.0f, 0.0f);
+    //glTranslatef(-30.0f, 40.0f, 0.0f);
 
     drawModelFile(MODEL_ONE);
 
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(-60.0f, 40.0f, 0.0f);
+    //glTranslatef(-60.0f, 40.0f, 0.0f);
 
     drawModelFile(MODEL_ONE);
 
@@ -704,7 +704,13 @@ void renderScene(void)
 
     glTranslatef(0.0f, 02.5f, 8.75f);
 
-    //removed the draw house loops
+    glPushMatrix();
+    glScalef(3, 3, 3);
+    glTranslatef(10, 0, 10);
+    glRotatef(90, 0, 1, 0);
+    glColor3f(255, 255, 0);
+    drawModels();
+    glPopMatrix();
 
     //firework shell material properties
     glMaterialfv(GL_FRONT, GL_DIFFUSE, fenceClr);
@@ -789,6 +795,8 @@ void myInit()
     }
 
     createFirework();
+
+    readModels();
 
     //set Sky colour
     //glClearColor(0.32f, 0.21f, 0.53f, 0.0f); pansy

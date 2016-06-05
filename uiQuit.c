@@ -33,13 +33,13 @@ void displayUIQuit()
 
 
     unsigned char* BLTex;
-    BLTex = SOIL_load_image("BL.jpg", &bw, &bh, 0, SOIL_LOAD_RGBA);
+    BLTex = SOIL_load_image("Data/BL.jpg", &bw, &bh, 0, SOIL_LOAD_RGBA);
 
     unsigned char* KMTex;
-    KMTex = SOIL_load_image("KM.jpg", &kw, &kh, 0, SOIL_LOAD_RGB);
+    KMTex = SOIL_load_image("Data/KM.jpg", &kw, &kh, 0, SOIL_LOAD_RGB);
 
     unsigned char* DNTex;
-    DNTex = SOIL_load_image("DN.jpg", &dw, &dh, 0, SOIL_LOAD_RGB);
+    DNTex = SOIL_load_image("Data/DN.jpg", &dw, &dh, 0, SOIL_LOAD_RGB);
 
     //draw images
     glPixelZoom(1, -1);

@@ -36,7 +36,7 @@ void displayUIOptions()
     //instructions
     //read in image
     unsigned char* instrTex;
-    instrTex = SOIL_load_image("uiO-instruct.PNG", &iTW, &iTH, 0, SOIL_LOAD_RGBA);
+    instrTex = SOIL_load_image("Data/uiO-instruct.PNG", &iTW, &iTH, 0, SOIL_LOAD_RGBA);
 
     //draw image
     glPixelZoom(1, -1);
