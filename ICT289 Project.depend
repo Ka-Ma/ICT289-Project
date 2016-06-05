@@ -29,14 +29,15 @@
 1458991720 source:d:\projects\university\ict289\project\ict289-project\objloader.c
 	"objloader.h"
 
-1463911688 d:\projects\university\ict289\project\ict289-project\objloader.h
+1465119183 d:\projects\university\ict289\project\ict289-project\objloader.h
 	<stdio.h>
 	<stdlib.h>
 	<GL/freeglut.h>
 	"math.h"
 
-1465044170 d:\projects\university\ict289\project\ict289-project\math.h
+1465093765 d:\projects\university\ict289\project\ict289-project\math.h
 	<stdbool.h>
+	<GL/freeglut.h>
 
 1461809218 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\objloader.c
 	"objloader.h"
@@ -153,7 +154,7 @@
 1464845355 d:\projects\university\ict289\project\ict289-project\globalstate.h
 	<stdbool.h>
 
-1465046259 source:d:\projects\university\ict289\project\ict289-project\main.c
+1465118984 source:d:\projects\university\ict289\project\ict289-project\main.c
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
@@ -241,10 +242,10 @@
 1464668955 source:c:\users\kat\documents\projects\ict289grpproj\ict289-project\aabbcol.c
 	"AABBCol.h"
 
-1465046036 source:d:\projects\university\ict289\project\ict289-project\particles.c
+1465118780 source:d:\projects\university\ict289\project\ict289-project\particles.c
 	"particles.h"
 
-1465045954 d:\projects\university\ict289\project\ict289-project\particles.h
+1465093765 d:\projects\university\ict289\project\ict289-project\particles.h
 	<stdio.h>
 	<GL/glaux.h>
 	<stdbool.h>

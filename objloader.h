@@ -13,7 +13,7 @@ FILE  *oFile;
 
 Objects objectList[MAX_MODELS];
 
-const char* readModelFile(char *fTitle, const int index);
+char* readModelFile(char *fTitle, int index);
 
 void drawModelFile(const int index);
 

@@ -38,23 +38,30 @@ float prevLoc[3] = {0.0f,0.0f,0.0f};
 
 int wRes = 1600; int hRes = 1000;
 // Angle of rotation for camera direction
-float angle = 0.0f, vAngle = 0.0f;
+float angle = 0.0f;
 // Actual vector representing the camera's direction
 float lx = 0.0f, lz = -1.0f, ly = 5.0f;
 // XZ position of the camera
-
 float x_loc = -5.0f, y_loc = 5.0f, z_loc = -10.0f;
-
+// XYZ of up vector
+float ux=0.0f, uy=1.0f, uz=0.0f;
+// XYZ of right vector for up vec calcs
+float rx=0.0f, ry = 0.0f, rz=0.0f;
 // Key states. Will be 0 when no keys are being pressed
 float deltaAngle = 0.0f;
 float deltaMove = 0;
-int xOrigin = -1;
-float vertAngle = 0.0f;
+int xOrigin = -1, yOrigin = -1;
+float vertAngle = 0.0f, vAngle = 0.0f;
+float a = 0.0f, b = 0.0f, c = 0.0f;
+double x1, s, z1;
 
+float corners = 45 * M_PI / 180.0;
 
 int t;
 int frame = 0, time, timebase = 0;
 int fps;
+
+bool isFiring = false;
 
 //Dynamic collision indexes
 int player_col;
@@ -95,7 +102,7 @@ void readModels()
 void FWBoom(float x, float s, float z)
 {
     PositionParticles(x, s, z);
-    ColourParticles(0.8f, 0.0f, 0.5f);
+    ColourParticles(gState.colour[0], gState.colour[1], gState.colour[2]);
     ParticleSpread(75, 50, 75);
     InitParticles();
 }
@@ -120,77 +127,82 @@ void animateFW(int val)
 {
 
     int currTime = glutGet(GLUT_ELAPSED_TIME);
-    int elapsedTime = currTime - prevTime;
+    printf("%d \n", currTime);
+    //getchar();
+    int elapsedTime = currTime - startTime;
+    printf("%d \n", elapsedTime);
+    //getchar();
+
+    double r=0.0; //vertical displacement and horizontal displacement
+
+    //Calc the y coord (vertical displacement)
+    s = pow((((gState.velocityCh*2.5) * (elapsedTime/1000.0)) + (0.5*GRAV*(elapsedTime/1000.0))),2.0);
+    if(s>maxS)
+    {
+        maxS = s;
+    }
+
+    if(gState.angle!=5) //4, as 5-1 (due to first being 0)
+    {
+        //Calc the horizontal displacement assuming terminal velocity is infinite
+        r = (gState.velocityCh*2.5) * cos(THETA*M_PI/180.0) * (elapsedTime/1000.0);
+
+        //switch case for angle calcs
+        switch(val)
+        {
+            case 1:
+                x1 = -1.0 * r * cos(corners);
+                z1 = r * sin(corners);
+                break;
+            case 4:
+                x1 = 0;
+                z1 = r;
+                break;
+            case 7:
+                x1 = r * cos(corners);
+                z1 = r * sin(corners);
+                break;
+            case 2:
+                x1 = -r;
+                z1 = 0;
+                break;
+            case 8:
+                x1 = r;
+                z1 = 0;
+                break;
+            case 3:
+                x1 = -r * cos(corners);
+                z1 = -r * sin(corners);
+                break;
+            case 6:
+                x1 = 0;
+                z1 = -r;
+                break;
+            case 9:
+                x1 = r * cos(corners);
+                z1 = -r * cos(corners);
+                break;
+            default:
+                break;
+        }
+    }
+    else
+    {
+        x1 = 0.0f;
+        z1 = 0.0f;
+    }
+
+    a = x1;
+    b = s;
+    c = z1;
 
     if(elapsedTime<gState.fuseCh)
     {
-        double s, r, x1, z1; //vertical displacement and horizontal displacement
-
-        //Calc the y coord (vertical displacement)
-        s = pow((((gState.velocityCh*2.5) * (elapsedTime/1000)) + (0.5*GRAV*(elapsedTime/1000))),2.0);
-        if(s>maxS)
-        {
-            maxS = s;
-        }
-
-        if(val!=5) //4, as 5-1 (due to first being 0)
-        {
-            //Calc the horizontal displacement assuming terminal velocity is infinite
-            r = (gState.velocityCh*2.5) * cos(THETA*M_PI/180.0) * (elapsedTime/1000);
-
-            //switch case for angle calcs
-            switch(val)
-            {
-                case 1:
-                    x1 = -1.0 * r * cos(corners);
-                    z1 = r * sin(corners);
-                    break;
-                case 2:
-                    x1 = 0;
-                    z1 = r;
-                    break;
-                case 3:
-                    x1 = r * cos(corners);
-                    z1 = r * sin(corners);
-                    break;
-                case 4:
-                    x1 = -r;
-                    z1 = 0;
-                    break;
-                case 6:
-                    x1 = r;
-                    z1 = 0;
-                    break;
-                case 7:
-                    x1 = -r * cos(corners);
-                    z1 = -r * sin(corners);
-                    break;
-                case 8:
-                    x1 = 0;
-                    z1 = -r;
-                    break;
-                case 9:
-                    x1 = r * cos(corners);
-                    z1 = -r * cos(corners);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        if(gState.trackFW)
-        {
-            gluLookAt(x_loc, 5.0f, z_loc,
-                x1 , maxS, z1,
-              0.0f, 0.0f, 1.0f);
-        }
-
         //generate firework at {x,s,z}
-        glTranslatef((x1-(prevLoc[0])),(s-prevLoc[1]),(z1-prevLoc[2]));
-        glCallList(FIREWORK);
-        prevLoc[0] = x1;
-        prevLoc[1] = s;
-        prevLoc[2] = z1;
+        printf("%f %f %f\n", x1, s, z1);
+        //glTranslatef((x1-(prevLoc[0])),(s-prevLoc[1]),(z1-prevLoc[2]));
+
+        glutPostRedisplay();
 
         glutTimerFunc(TIMERSECS, animateFW, val);
     }
@@ -198,6 +210,7 @@ void animateFW(int val)
         //call fw detonation func
         FWBoom(x1,s,z1);
         maxS = 0;
+        isFiring = false;
     }
 }
 
@@ -234,6 +247,8 @@ void rasterInt(int dNum, int xPos, int yPos, int r, int g, int b)
     }
 }
 
+
+//temporary removal
 void mouseMove(int x, int y)
 {
     // This will only be true when the left button is down
@@ -243,14 +258,21 @@ void mouseMove(int x, int y)
         deltaAngle = (x - xOrigin) * 0.001f;
         xOrigin = x;
 
-        // Update vertical view angle
-        int hei = glutGet(GLUT_WINDOW_HEIGHT);
-        vertAngle += ((float) hei/2 - y);
-
-        // Update camera's direction
         lx = sin(angle + deltaAngle);
-        ly = sin(vertAngle);
         lz = cos(angle + deltaAngle);
+
+        glutPostRedisplay();
+    }
+
+    if(yOrigin >= 0)
+    {
+        vAngle = (y - yOrigin) * 0.001f;
+        yOrigin = y;
+        // Update camera's direction
+        if(!(vAngle>90||vAngle<-90))
+        {
+            ly += sin(vAngle);
+        }
 
         glutPostRedisplay();
     }
@@ -269,11 +291,11 @@ void mouseButton(int button, int state, int x, int y)
                 angle += deltaAngle;
                 deltaAngle = 0;
                 xOrigin = -1;
+                yOrigin = -1;
             }else
             {
-                int mouseX = glutGet(GLUT_WINDOW_WIDTH)/2, mouseY = glutGet(GLUT_WINDOW_HEIGHT)/2;
-                glutWarpPointer(mouseX, mouseY);
                 xOrigin = x;
+                yOrigin = y;
             }
         }
     }
@@ -360,11 +382,12 @@ void keyPress(unsigned char key, int x, int y)
         case 'l':
             startTime = glutGet(GLUT_ELAPSED_TIME);
             prevTime = startTime;
+            isFiring = true;
+            if(gState.angleRand)
+            {
+                gState.angle = (rand()%9)+1;
+            }
             glutTimerFunc(TIMERSECS, animateFW, gState.angle);
-            PositionParticles(0, 5, -20);
-            ColourParticles(0.8f, 0.0f, 0.5f);
-            ParticleSpread(75, 50, 75);
-            InitParticles();
             break;
         }
     }
@@ -446,16 +469,6 @@ void calcNormal( float p1[3], float p2[3], float p3[3], float n[3])
     n[2] /= length;
 }
 
-//EXPLODE FIREWORK FUNCTION
-// //TO USE PARTICLES, SIMPLY USE THE FOLLOWING CALLS
-// PositionParticles(0, 5, -20);
-// ColourParticles(0.8f, 0.0f, 0.5f);
-// ParticleSpread(75, 50, 75);
-// InitParticles();
-// //WHERE fx, fy and fz ARE THE X, Y AND Z COORDINATES OF THE FIREWORK
-// //NEED BRANDON'S LAUNCH FUNCTIONS TO CONTINUE
-// //CURRENTLY ALL PARTICLES ARE ONE COLOUR, WILL WORK ON CHANGING SAID COLOUR IF NECESSARY
-
 void renderScene(void)
 {
     //normal for object being lit
@@ -492,9 +505,13 @@ void renderScene(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    gluLookAt(x_loc, y_loc, z_loc,
+    if(!gState.trackFW){
+        gluLookAt(x_loc, y_loc, z_loc,
               x_loc + lx, ly, z_loc + lz,
-              0.0f, 1.0f, 0.0f);
+              ux, uy, uz);
+    } else {
+        gluLookAt(x_loc, y_loc, z_loc,  a, b, c,  ux, uy, uz);
+    }
 
 
     //materials for lighting (note that because most of the surfaces being lit are one big surface they don't light well
@@ -507,6 +524,7 @@ void renderScene(void)
     GLfloat white[] = {1.0f, 1.0f, 1.0f, 0.0f};
 
     //grass floor
+    glColor3fv(grassClr);
     point3 grassV[4] = {{-1000.0f, 0.0f, -1000.0f}, {1000.0f, 0.0f, -1000.0f}, {1000.0f, 0.0f, 0.0f}, {-1000.0f, 0.0f, 0.0f}};
     calcNormal(grassV[1], grassV[0], grassV[2], normal);
     glBegin(GL_POLYGON);
@@ -522,6 +540,7 @@ void renderScene(void)
     //water/ground cliff
     point3 wtrGrdV[4] = {{-1000.0f, -0.05f, 0.0f}, {-1000.0f, 0.0f, 0.0f}, {1000.0f, 0.0f, 0.0f}, {1000.0f, -0.05f, 0.0f}};
     calcNormal(wtrGrdV[0], wtrGrdV[1], wtrGrdV[2], normal);
+    glColor3fv(grassClr);
     glBegin(GL_POLYGON);
         glNormal3fv(normal);
         glVertex3fv(wtrGrdV[0]);
@@ -532,6 +551,7 @@ void renderScene(void)
     //water floor
     point3 waterV[4] = {{-1000.0f, -0.05f, 0.0f}, {1000.0f, -0.05f, 0.0f}, {1000.0f, -0.05f, 1000.0f}, {-1000.0f, -0.05f,1000.0f}};
     calcNormal(waterV[0], waterV[1], waterV[2], normal);
+    glColor3fv(waterClr);
     glBegin(GL_POLYGON);
         glNormal3f(0,1,0);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, waterClr);
@@ -544,6 +564,7 @@ void renderScene(void)
     //fence bits
     point3 fenceLV[4] = {{-100.0f,0.0f,-100.0f}, {-100.0f,0.0f,0.0f}, {-100.0f,2.5f,0.0f}, {-100.0f,2.5f,-100.0f}};
     calcNormal(fenceLV[1], fenceLV[0], fenceLV[2], normal);
+    glColor3fv(fenceClr);
     glBegin(GL_QUADS); //Left Fence
         glNormal3fv(normal);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, fenceClr);
@@ -552,9 +573,27 @@ void renderScene(void)
         glVertex3fv(fenceLV[2]);
         glVertex3fv(fenceLV[3]);
     glEnd();
+    point3 fenceFV[4] = {{-100.0f,0.0f,0.0f}, {-5.0f,0.0f,0.0f}, {-5.0f,2.5f,0.0f}, {-100.0f,2.5f,0.0f}};
+    glBegin(GL_QUADS); //Water Fence
+        glNormal3fv(normal);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, fenceClr);
+        glVertex3fv(fenceFV[0]);
+        glVertex3fv(fenceFV[1]);
+        glVertex3fv(fenceFV[2]);
+        glVertex3fv(fenceFV[3]);
+    glEnd();
+    point3 fenceFV2[4] = {{100.0f,0.0f,0.0f}, {5.0f,0.0f,0.0f}, {5.0f,2.5f,0.0f}, {100.0f,2.5f,0.0f}};
+    glBegin(GL_QUADS); //Water Fence
+        glNormal3fv(normal);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, fenceClr);
+        glVertex3fv(fenceFV2[0]);
+        glVertex3fv(fenceFV2[1]);
+        glVertex3fv(fenceFV2[2]);
+        glVertex3fv(fenceFV2[3]);
+    glEnd();
     //Front fence removed
     //Right fence
-    point3 fenceRV[4] = {{100.0f,0.0f,100.0f}, {100.0f,0.0f,-100.0f}, {100.0f,2.5f,-100.0f}, {100.0f,2.5f,100.0f}};
+    point3 fenceRV[4] = {{100.0f,0.0f,0.0f}, {100.0f,0.0f,-100.0f}, {100.0f,2.5f,-100.0f}, {100.0f,2.5f,0.0f}};
     calcNormal(fenceRV[1], fenceRV[0], fenceRV[2], normal);
     glBegin(GL_QUADS);
         glNormal3fv(normal);
@@ -576,6 +615,7 @@ void renderScene(void)
     //Pier
     point3 pierV[4] = {{-5.0f, 0.0f, 0.0f}, {5.0f, 0.0f, 0.0f}, {5.0f, 0.0f, 10.0f}, {-5.0f, 0.0f, 10.0f}};
     calcNormal(pierV[0], pierV[1], pierV[2], normal);
+    glColor3fv(pierClr);
     glBegin(GL_POLYGON); //Pier top
         glNormal3f(0,1,0);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, pierClr);
@@ -621,6 +661,7 @@ void renderScene(void)
                         {3.75f,2.5,7.5f}, {3.75f,0.0,7.5f}, {3.75f,0.0,10.0f}, {3.75f,2.5,10.0f}, //right
                         {3.75f,2.5,10.0f}, {3.75f,0.0,10.0f}, {-3.75f,0.0,10.0f}, {-3.75f,2.5,10.0f}}; //back
     calcNormal(fwBoxV[1], fwBoxV[0], fwBoxV[2], normal);
+    glColor3fv(boxClr);
     glBegin(GL_POLYGON); //Box Top
         glNormal3f(0,1,0);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, boxClr);
@@ -664,7 +705,7 @@ void renderScene(void)
         glVertex3fv(fwBoxV[19]);
     glEnd();
 
-    glTranslatef(0.0f, 0.0f, 8.75f);
+    glTranslatef(0.0f, 02.5f, 8.75f);
 
     //removed the draw house loops
 
@@ -675,10 +716,21 @@ void renderScene(void)
     glMaterialf(GL_FRONT, GL_SHININESS, 10);
 
     glPushMatrix();
-    //glScalef(5, 5, 5);
-    glRotatef(270, 1.0, 0, 0);
-    glTranslatef(0, 2, 0);
-    glCallList(FIREWORK);
+    if (isFiring)
+    {
+        printf("Is Firing");
+        GLUquadricObj * quad;
+        quad = gluNewQuadric();
+        glTranslatef(x1, s, z1);
+        prevLoc[0] = x1;
+        prevLoc[1] = s;
+        prevLoc[2] = z1;
+        glRotatef(270, 1.0, 0, 0);
+        gluCylinder(quad, 0.6, 0.6, 0.4, 24, 4);
+        gluDisk(quad, 0, 0.6, 24, 5);
+        glTranslatef(0, 0, 1);
+        gluSphere(quad, 0.9, 24, 24);
+    }
     glPopMatrix();
 
 
@@ -699,8 +751,6 @@ void renderScene(void)
     glPopMatrix();
     //will need to disable lighting here for firework particles & UI KM
     glDisable(GL_LIGHTING);
-
-    //DrawParticles();
 
     glMatrixMode(GL_PROJECTION);
 
@@ -754,7 +804,7 @@ void myInit()
      //Enable lighting
     glEnable (GL_LIGHTING); //
     glEnable (GL_LIGHT0); // sun
-    glEnable (GL_LIGHT1); // firework centroid
+    //glEnable (GL_LIGHT1); // firework centroid
     glShadeModel(GL_SMOOTH);
 
     GLfloat fw_position[] = {x_loc,y_loc,z_loc,1}; // at firework centroid but following camera for now
@@ -780,6 +830,8 @@ void myInit()
     glutSpecialUpFunc(keyRelease);
     glutMouseFunc(mouseButton);
     glutMotionFunc(mouseMove);
+
+
 }
 
 int main(int argc, char **argv)
@@ -796,6 +848,9 @@ int main(int argc, char **argv)
 
     // OpenGL Init
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_EMISSION);
 
     // Enter GLUT event processing cycle
     glutMainLoop();

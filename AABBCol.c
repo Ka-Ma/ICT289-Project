@@ -65,7 +65,7 @@ void UpdateDynamic(double xMin, double xMax,
     physiO[dynamicIndex].y.min = yMin;   //Add yMin to associated dynamic array
     physiO[dynamicIndex].y.max = yMax;   //Add yMax to associated dynamic array
     physiO[dynamicIndex].z.min = zMin;   //Add zMin to associated dynamic array
-    physiO[dynamicIndex].z.max = zMax;
+    physiO[dynamicIndex].z.max = zMax;	 //Add zMin to associated dynamic array
 }
 
 bool CheckCollisions(int dynamik)
