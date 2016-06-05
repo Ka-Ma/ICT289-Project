@@ -127,10 +127,8 @@ void animateFW(int val)
 {
 
     int currTime = glutGet(GLUT_ELAPSED_TIME);
-    printf("%d \n", currTime);
     //getchar();
     int elapsedTime = currTime - startTime;
-    printf("%d \n", elapsedTime);
     //getchar();
 
     double r=0.0; //vertical displacement and horizontal displacement
@@ -199,7 +197,6 @@ void animateFW(int val)
     if(elapsedTime<gState.fuseCh)
     {
         //generate firework at {x,s,z}
-        printf("%f %f %f\n", x1, s, z1);
         //glTranslatef((x1-(prevLoc[0])),(s-prevLoc[1]),(z1-prevLoc[2]));
 
         glutPostRedisplay();
@@ -718,7 +715,6 @@ void renderScene(void)
     glPushMatrix();
     if (isFiring)
     {
-        printf("Is Firing");
         GLUquadricObj * quad;
         quad = gluNewQuadric();
         glTranslatef(x1, s, z1);
