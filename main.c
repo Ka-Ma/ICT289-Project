@@ -245,9 +245,9 @@ void mouseMove(int x, int y)
         vertAngle += ((float) hei/2 - y);
 
         // Update camera's direction
-        lx = cos(vertAngle) * sin(angle + deltaAngle);
+        lx = sin(angle + deltaAngle);
         ly = sin(vertAngle);
-        lz = cos(vertAngle) * cos(angle + deltaAngle);
+        lz = cos(angle + deltaAngle);
 
         glutPostRedisplay();
     }
