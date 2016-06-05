@@ -68,7 +68,7 @@ void drawSlider(GLshort left[], GLshort right[])
 {
     int i,j;
     GLshort between;
-    bool done;
+    bool done = false;
 
     //to find ideal between
     for(j=8; j<20; j++)
