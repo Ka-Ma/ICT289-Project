@@ -38,6 +38,10 @@
 		<Unit filename="AABBCol.h" />
 		<Unit filename="SOIL.h" />
 		<Unit filename="SOIL.o" />
+		<Unit filename="calcNorm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="calcNorm.h" />
 		<Unit filename="dispText.c">
 			<Option compilerVar="CC" />
 		</Unit>

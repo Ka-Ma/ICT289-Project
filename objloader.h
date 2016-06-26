@@ -6,6 +6,7 @@
 #include <GL/freeglut.h>
 
 #include "math.h"
+#include "calcNorm.h"
 
 #define MAX_MODELS  50
 
